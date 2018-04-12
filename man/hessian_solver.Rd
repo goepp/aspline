@@ -16,7 +16,7 @@ hessian_solver(par, XX_band, Xy, pen, w, diff)
 \item{diff}{The order of the differences of the parameter. Equals \code{degree + 1} in adaptive spline regression.}
 }
 \value{
-The solution of the linear system
+The solution of the linear system \eqn{(X^T X + pen D^T \mathrm{diag}(w) D) ^ {-1} X^T y - \mathrm{par}}
 }
 \description{
 Inverse the hessian and multiply it by the score

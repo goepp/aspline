@@ -11,8 +11,7 @@ NULL
 #' @param pen Positive penalty constant.
 #' @param w Vector of weights. Has to be of length
 #' @param diff The order of the differences of the parameter. Equals \code{degree + 1} in adaptive spline regression.
-#' @return The solution of the linear system
-
+#' @return The solution of the linear system \eqn{(X^T X + pen D^T \mathrm{diag}(w) D) ^ {-1} X^T y - \mathrm{par}}
 #' @export
 hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
   if (ncol(XX_band) != diff + 1) stop("Error: XX_band must have diff + 1 columns")
@@ -30,7 +29,7 @@ hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
 #' @param maxiter Maximum number of Newton-Raphson iterations to be computed.
 #' @return The estimated parameter of the spline regression.
 #' @export
-wridge_solver_fast_2 <- function(XX_band, Xy, degree, pen,
+wridge_solver <- function(XX_band, Xy, degree, pen,
                                  w = rep(1, nrow(XX_band) - degree - 1),
                                  old_par = rep(1, nrow(XX_band)),
                                  maxiter = 1000,
