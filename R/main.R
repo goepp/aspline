@@ -5,13 +5,13 @@ NULL
 #' Inverse the hessian and multiply it by the score
 #'
 #' @param par The parameter vector
-#' @param XX_band The matrix \code{t(X) %*% X} where \code{X} is the design matrix. This argument is given
+#' @param XX_band The matrix \eqn{X^T X} where \code{X} is the design matrix. This argument is given
 #' in the form of a band matrix, i.e., successive columns represent superdiagonals.
-#' @param Xy The vector of currently estimated points \code{t(X) %*% y}, where \code{y} is the y-coordinate of the data.
+#' @param Xy The vector of currently estimated points \eqn{X^T y}, where \eqn{y} is the y-coordinate of the data.
 #' @param pen Positive penalty constant.
 #' @param w Vector of weights. Has to be of length
 #' @param diff The order of the differences of the parameter. Equals \code{degree + 1} in adaptive spline regression.
-#' @return The solution of the linear system \eqn{(X^T X + pen D^T \mathrm{diag}(w) D) ^ {-1} X^T y - \mathrm{par}}
+#' @return The solution of the linear system: \deqn{(X^T X + pen D^T diag(w) D) ^ {-1} X^T y - par}
 #' @export
 hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
   if (ncol(XX_band) != diff + 1) stop("Error: XX_band must have diff + 1 columns")
@@ -19,9 +19,9 @@ hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
 }
 #' Fit B-Splines with weighted penalization over differences of parameters
 #'
-#' @param XX_band The matrix \code{t(X) %*% X} where \code{X} is the design matrix. This argument is given
+#' @param XX_band The matrix \eqn{X^T X} where \code{X} is the design matrix. This argument is given
 #' in the form of a band matrix, i.e., successive columns represent superdiagonals.
-#' @param Xy The vector of currently estimated points \code{t(X) %*% y}, where \code{y} is the y-coordinate of the data.
+#' @param Xy The vector of currently estimated points \eqn{X^T y}, where \code{y} is the y-coordinate of the data.
 #' @param degree The degree of the B-splines.
 #' @param pen Positive penalty constant.
 #' @param w Vector of weights. The case \eqn{\mathbf w = \mathbf 1} corresponds to fitting P-splines with difference #' order \code{degree + 1} (see \emph{Eilers, P., Marx, B. (1996) Flexible smoothing with B-splines and penalties}.)
@@ -58,6 +58,7 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' @param diff Order of the differences on the parameters. The value \code{degree + 1} is necessary to perform
 #' selection of the knots.
 #' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
+#' @export
 aridge_solver <- function(X, y, degree, pen,
                           maxiter = 1000,
                           epsilon = 1e-5,

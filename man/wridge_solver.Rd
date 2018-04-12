@@ -8,6 +8,11 @@ wridge_solver(XX_band, Xy, degree, pen, w = rep(1, nrow(XX_band) - degree -
   1), old_par = rep(1, nrow(XX_band)), maxiter = 1000, tol = 1e-08)
 }
 \arguments{
+\item{XX_band}{The matrix \eqn{X^T X} where \code{X} is the design matrix. This argument is given
+in the form of a band matrix, i.e., successive columns represent superdiagonals.}
+
+\item{Xy}{The vector of currently estimated points \eqn{X^T y}, where \code{y} is the y-coordinate of the data.}
+
 \item{degree}{The degree of the B-splines.}
 
 \item{pen}{Positive penalty constant.}
