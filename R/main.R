@@ -76,7 +76,7 @@ aridge_solver <- function(X, y, pen, degree,
                           diff = degree + 1,
                           tol = 1e-6) {
   XX <- crossprod(X)
-  XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0, 0)
+  XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
   Xy <- crossprod(X, y)
   # Define sigma0
   sigma0sq <- var(lm(y ~ X - 1)$residuals)
@@ -123,7 +123,7 @@ aridge_solver <- function(X, y, pen, degree,
       bic[ind_pen] <- log(nrow(X)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
         2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
       aic[ind_pen] <- 2 * (length(knots_sel[[ind_pen]]) + degree + 1) +
-        2 * log(sum((model[[ind_pen]]$residuals) ^ 2)) * 20
+        2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
       ebic[ind_pen] <- bic[ind_pen] + 2 * lchoose(ncol(X), ncol(X_sel[[ind_pen]]))
       ind_pen <- ind_pen + 1
     }
