@@ -4,7 +4,7 @@
 \alias{aridge_solver}
 \title{Fit B-splines with automatic knot selection.}
 \usage{
-aridge_solver(X, y, degree, pen, maxiter = 1000, epsilon = 1e-05,
+aridge_solver(X, y, pen, degree, maxiter = 1000, epsilon = 1e-05,
   verbose = FALSE, diff = degree + 1, tol = 1e-06)
 }
 \arguments{
@@ -12,9 +12,9 @@ aridge_solver(X, y, degree, pen, maxiter = 1000, epsilon = 1e-05,
 
 \item{y}{Data y values}
 
-\item{degree}{The degree of the splines. Recommended value is 3, which corresponds to natural splines.}
-
 \item{pen}{A vector of positive penalty values. The adaptive spline regression is performed for every value of pen}
+
+\item{degree}{The degree of the splines. Recommended value is 3, which corresponds to natural splines.}
 
 \item{maxiter}{Maximum number of iterations  in the main loop.}
 

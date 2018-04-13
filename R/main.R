@@ -69,7 +69,7 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' selection of the knots.
 #' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
 #' @export
-aridge_solver <- function(X, y, degree, pen,
+aridge_solver <- function(X, y, pen, degree,
                           maxiter = 1000,
                           epsilon = 1e-5,
                           verbose = FALSE,
