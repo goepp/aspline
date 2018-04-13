@@ -5,12 +5,11 @@ using namespace Rcpp;
 //'
 //' @param w The vector of weights
 //' @param diff The order of the differences to be applied to the parameters. Must be a strictly positive integer
-//' @return The matrix of weights \code{t(D) %*% diag(w) %*% D} where
+//' @return The matrix of weights \eqn{D^T diag(w) D} where
 //'  \code{D <- diff(diag(length(w) + diff), differences = diff)}. Only the non-null superdiagonals of
 //'  the weight matrixare returned, each column corresponding to a diagonal.
 //' @export
 // [[Rcpp::export]]
-// [[Rcpp::interfaces(r, cpp)]]
 NumericMatrix band_weight(NumericVector w, int diff) {
   int ws = w.size();
   NumericVector binom(diff + 1);
@@ -35,12 +34,4 @@ NumericMatrix band_weight(NumericVector w, int diff) {
   return result;
 }
 
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically
-// run after the compilation.
-//
 
-/*** R
-band_weight(rnorm(10), 2)
-
-*/

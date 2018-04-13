@@ -1,6 +1,15 @@
 #' @useDynLib aspline
 #' @importFrom Rcpp sourceCpp
 NULL
+#' Pipe operator
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL
 #'
 #' Inverse the hessian and multiply it by the score
 #'
@@ -15,7 +24,7 @@ NULL
 #' @export
 hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
   if (ncol(XX_band) != diff + 1) stop("Error: XX_band must have diff + 1 columns")
-  bandsolve(XX_band + pen * band_weight(w, diff), Xy) - par
+  bandsolve::bandsolve(XX_band + pen * band_weight(w, diff), Xy) - par
 }
 #' Fit B-Splines with weighted penalization over differences of parameters
 #'
@@ -27,6 +36,7 @@ hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
 #' @param w Vector of weights. The case \eqn{\mathbf w = \mathbf 1} corresponds to fitting P-splines with difference #' order \code{degree + 1} (see \emph{Eilers, P., Marx, B. (1996) Flexible smoothing with B-splines and penalties}.)
 #' @param old_par Initial parameter to serve as starting point of the iterating process.
 #' @param maxiter Maximum number of Newton-Raphson iterations to be computed.
+#' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
 #' @return The estimated parameter of the spline regression.
 #' @export
 wridge_solver <- function(XX_band, Xy, degree, pen,
@@ -66,7 +76,7 @@ aridge_solver <- function(X, y, degree, pen,
                           diff = degree + 1,
                           tol = 1e-6) {
   XX <- crossprod(X)
-  XX_band <- cbind(mat2rot(XX + diag(rep(1e-20), ncol(X))), 0, 0)
+  XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0, 0)
   Xy <- crossprod(X, y)
   # Define sigma0
   sigma0sq <- var(lm(y ~ X - 1)$residuals)
@@ -95,8 +105,8 @@ aridge_solver <- function(X, y, degree, pen,
     if (converge) {
       sel_ls[[ind_pen]] <- sel
       knots_sel[[ind_pen]] <- knots[sel > 0.99]
-      X_sel[[ind_pen]] <- bSpline(x, knots = knots_sel[[ind_pen]], intercept = TRUE,
-                                  degree = degree)
+      X_sel[[ind_pen]] <- splines2::bSpline(
+        x, knots = knots_sel[[ind_pen]], intercept = TRUE, degree = degree)
       model[[ind_pen]] <- lm(y ~ X_sel[[ind_pen]] - 1)
       if (verbose) {
         plot(x, y, col = "gray")
@@ -137,14 +147,14 @@ aridge_solver <- function(X, y, degree, pen,
                    " are dropped and then reselected"))
   }
   # Print regularization path
-  regul_df <- data_frame(penalty = rep(pen, each = ncol(X)),
+  regul_df <- dplyr::data_frame(penalty = rep(pen, each = ncol(X)),
                          index = rep(1:(ncol(X)), length(pen)),
                          param = par_ls %>% unlist())
-  path <- ggplot(regul_df, aes(penalty, param, color = as.factor(index))) +
-    geom_line() +
-    scale_x_log10() +
-    theme(legend.position = 'none') +
-    geom_vline(xintercept = pen[which(diff(apply(sel_mat, 2, sum)) != 0) + 1],
+  path <- ggplot2::ggplot(regul_df, aes(penalty, param, color = as.factor(index))) +
+    ggplot2::geom_line() +
+    ggplot2::scale_x_log10() +
+    ggplot2::theme(legend.position = 'none') +
+    ggplot2::geom_vline(xintercept = pen[which(diff(apply(sel_mat, 2, sum)) != 0) + 1],
                size = 0.2)
   # Return values
   list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,

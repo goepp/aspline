@@ -4,15 +4,21 @@ Title: Spline Regression with Adaptive Knot Selection
 Version: 0.1.0
 Author: Grégory Nuel and Vivien Goepp
 Maintainer: Vivien Goepp <vivien.goepp@gmail.com>
-Description: Perform one-dimensional spline regression with automatic knot selection
+Description: Perform one-dimensional spline regression with automatic knot selection.
+      This package uses a penalized approach to select the most relevant knots.
+      B-splines of any degree can be fitted.  
+Depends: R (>= 2.10)
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: http://github.com/goepp/hazreg
 Imports:
-    tidyverse,
+    magrittr,
+    ggplot2,
+    dplyr,
     splines2,
-    Rcpp
+    Rcpp,
+    bandsolve
 RoxygenNote: 6.0.1
 LinkingTo: Rcpp
 Suggests: testthat

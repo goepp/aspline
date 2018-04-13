@@ -22,6 +22,8 @@ in the form of a band matrix, i.e., successive columns represent superdiagonals.
 \item{old_par}{Initial parameter to serve as starting point of the iterating process.}
 
 \item{maxiter}{Maximum number of Newton-Raphson iterations to be computed.}
+
+\item{tol}{The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.}
 }
 \value{
 The estimated parameter of the spline regression.
