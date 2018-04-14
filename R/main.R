@@ -163,7 +163,7 @@ aridge_solver <- function(X, y, pen, degree,
        "increasing" = increasing, "decreasing" = decreasing)
 }
 #' @export
-wrapper_aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2)[-c(1, 2 * length(x) + 2)],
+aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2)[-c(1, 2 * length(x) + 2)],
                             degree = 3,
                             maxiter = 1000,
                             epsilon = 1e-5,
@@ -181,8 +181,7 @@ wrapper_aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * lengt
   rm(X)
   # Define returned variables
   model <- X_sel <- knots_sel <- sel_ls <- par_ls <- vector("list", length(pen))
-  aic <- bic <- ebic <- pen * NA
-  increasing <- decreasing <- pen * NA
+  aic <- bic <- ebic <- loglik <- dim <- pen * NA
   # Initialize values
   old_sel <- rep(1, nrow(XX_band) - diff)
   par <- rep(1, nrow(XX_band))
@@ -217,8 +216,8 @@ wrapper_aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * lengt
       idx <- c(sel > 0.99, rep(TRUE, diff))
       par_ls[[ind_pen]][idx] <- model[[ind_pen]]$coefficients
       par_ls[[ind_pen]][!idx] <- 0
-      increasing[ind_pen] <- 2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
-      decreasing[ind_pen] <- log(nrow(XX_band)) * (length(knots_sel[[ind_pen]]) + degree + 1)
+      loglik[ind_pen] <- 2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      dimension[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
       bic[ind_pen] <- log(ncol(XX_band)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
         2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
       aic[ind_pen] <- 2 * (length(knots_sel[[ind_pen]]) + degree + 1) +
@@ -233,17 +232,18 @@ wrapper_aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * lengt
   sel_mat <- sel_ls %>%
     unlist() %>%
     round(digits = 1) %>%
-    matrix(., ncol(X) - degree - 1)
+    matrix(ncol(X) - degree - 1)
   knots_sel_monotonous <- apply(sel_mat, 1, function(a) all(diff(a) <= 0))
   if (!all(knots_sel_monotonous)) {
     if (sum(!knots_sel_monotonous) >= 10) {
-      warning(paste0("The models are not nested:\n",
+      warning(paste0("The models are not nested: ",
                      sum(!knots_sel_monotonous),
                      " knots are dropped and then reselected"))
-    }
-    warning(paste0("The models are not nested:\n",
-                   "Knots number ", paste(which(!knots_sel_monotonous), collapse = ', '),
+    } else {
+    warning(paste0("The models are not nested: ",
+                   "knots number ", paste(which(!knots_sel_monotonous), collapse = ', '),
                    " are dropped and then reselected"))
+    }
   }
   # Print regularization path
   regul_df <- dplyr::data_frame(penalty = rep(pen, each = nrow(XX_band)),
@@ -256,8 +256,8 @@ wrapper_aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * lengt
     ggplot2::geom_vline(xintercept = pen[which(diff(apply(sel_mat, 2, sum)) != 0) + 1],
                         size = 0.2)
   # Return values
-  list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
-       "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
-       "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
-       "increasing" = increasing, "decreasing" = decreasing)
+  list("model" = model, "sel" = sel_ls, "knots" = knots_sel,
+       "design" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
+       "aic" = aic, "bic" = bic, "ebic" = ebic, "loglik" = loglik,
+       "dim" = dim, "path" = path)
 }

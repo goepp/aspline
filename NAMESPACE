@@ -2,6 +2,7 @@
 
 export("%>%")
 export(aridge_solver)
+export(aspline)
 export(band_weight)
 export(hessian_solver)
 export(wridge_solver)
