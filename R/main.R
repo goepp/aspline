@@ -83,7 +83,7 @@ aridge_solver <- function(X, y, pen, degree,
   # Define returned variables
   model <- X_sel <- knots_sel <- sel_ls <- par_ls <- vector("list", length(pen))
   aic <- bic <- ebic <- pen * NA
-  increasing <- decreasing <- pen * NA
+  dim <- loglik <- pen * NA
   # Initialize values
   old_sel <- rep(1, ncol(X) - diff)
   par <- rep(1, ncol(X))
@@ -118,8 +118,9 @@ aridge_solver <- function(X, y, pen, degree,
       idx <- c(sel > 0.99, rep(TRUE, diff))
       par_ls[[ind_pen]][idx] <- model[[ind_pen]]$coefficients
       par_ls[[ind_pen]][!idx] <- 0
-      increasing[ind_pen] <- 2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
-      decreasing[ind_pen] <- log(nrow(X)) * (length(knots_sel[[ind_pen]]) + degree + 1)
+      loglik[ind_pen] <- log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      dim[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
+      cv[ind_pen]
       bic[ind_pen] <- log(nrow(X)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
         2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
       aic[ind_pen] <- 2 * (length(knots_sel[[ind_pen]]) + degree + 1) +
@@ -141,10 +142,11 @@ aridge_solver <- function(X, y, pen, degree,
       warning(paste0("The models are not nested:\n",
                      sum(!knots_sel_monotonous),
                      " knots are dropped and then reselected"))
-    }
+    } else {
     warning(paste0("The models are not nested:\n",
                    "Knots number ", paste(which(!knots_sel_monotonous), collapse = ', '),
                    " are dropped and then reselected"))
+    }
   }
   # Print regularization path
   regul_df <- dplyr::data_frame(penalty = rep(pen, each = ncol(X)),
