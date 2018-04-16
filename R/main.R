@@ -218,7 +218,7 @@ aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2
       idx <- c(sel > 0.99, rep(TRUE, diff))
       par_ls[[ind_pen]][idx] <- model[[ind_pen]]$coefficients
       par_ls[[ind_pen]][!idx] <- 0
-      loglik[ind_pen] <- 2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      loglik[ind_pen] <- log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
       dimension[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
       bic[ind_pen] <- log(ncol(XX_band)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
         2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
@@ -263,26 +263,28 @@ aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2
        "aic" = aic, "bic" = bic, "ebic" = ebic, "loglik" = loglik,
        "dim" = dim, "path" = path)
 }
+#' K-fold cross-validation
 #' @export
-kcv <- function(pen_vect, nfold, x, y) {
-  score_matrix <- matrix(NA, nfold, length(pen_vect))
+kcv <- function(x, y, pen = 10 ^ seq(-3, 3, length = 50), nfold = 10) {
+  x <- as.vector(x)
+  y <- as.vector(y)
+  score_matrix <- matrix(NA, nfold, length(pen))
   for (ind in 1:nfold) {
     sample_test <- seq(floor(length(x)/nfold) * (ind - 1) + 1,
                        floor(length(x)/nfold) * ind)
     sample_train <- setdiff(1:length(x), sample_test)
-    x_train <- as.vector(x)[sample_train]
-    y_train <- as.vector(y)[sample_train]
-    train <- aspline(x_train, y_train)
-    train_par_ls <- lapply(train$par, function(par) '[<-'(par, which(is.nan(par)), 0))
-    train_sel_ls <- train$sel
-    exhaust_test_ls <-  lapply(train_sel_ls, function(sel) exhaustive_stat_sel(
-      exhaustive_stat(dplyr::slice(data, sample_test),  cuts_age, cuts_cohort), sel))
-    score_mat[ind, ] <- mapply(
-      FUN = function(par, exhaust_test) loglik_sel_interaction(par, exhaust_test$O, exhaust_test$R),
-      par = train_par_ls, exhaust_test = exhaust_test_ls)
-    if (any(is.null(score_mat[ind, ]))) {
-      stop('Error in call to aridge_solver_interaction')
+    x_train <- x[sample_train]
+    y_train <- y[sample_train]
+    x_test <- x[sample_test]
+    y_test <- y[sample_test]
+    train <- aspline(x_train, y_train, pen)$model
+    score_matrix[ind, ] <- sapply(
+      seq_along(train),
+    function(model) log(sum((y_test - predict(model, x_test)) ^ 2))
+    )
+    if (any(is.null(score_matrix[ind, ]))) {
+      stop('Error in call to aspline')
     }
   }
-  colSums(score_mat)
+  colSums(score_matrix)
 }
