@@ -263,3 +263,26 @@ aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2
        "aic" = aic, "bic" = bic, "ebic" = ebic, "loglik" = loglik,
        "dim" = dim, "path" = path)
 }
+#' @export
+kcv <- function(pen_vect, nfold, x, y) {
+  score_matrix <- matrix(NA, nfold, length(pen_vect))
+  for (ind in 1:nfold) {
+    sample_test <- seq(floor(length(x)/nfold) * (ind - 1) + 1,
+                       floor(length(x)/nfold) * ind)
+    sample_train <- setdiff(1:length(x), sample_test)
+    x_train <- as.vector(x)[sample_train]
+    y_train <- as.vector(y)[sample_train]
+    train <- aspline(x_train, y_train)
+    train_par_ls <- lapply(train$par, function(par) '[<-'(par, which(is.nan(par)), 0))
+    train_sel_ls <- train$sel
+    exhaust_test_ls <-  lapply(train_sel_ls, function(sel) exhaustive_stat_sel(
+      exhaustive_stat(dplyr::slice(data, sample_test),  cuts_age, cuts_cohort), sel))
+    score_mat[ind, ] <- mapply(
+      FUN = function(par, exhaust_test) loglik_sel_interaction(par, exhaust_test$O, exhaust_test$R),
+      par = train_par_ls, exhaust_test = exhaust_test_ls)
+    if (any(is.null(score_mat[ind, ]))) {
+      stop('Error in call to aridge_solver_interaction')
+    }
+  }
+  colSums(score_mat)
+}
