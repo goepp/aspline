@@ -120,7 +120,6 @@ aridge_solver <- function(X, y, pen, degree,
       par_ls[[ind_pen]][!idx] <- 0
       loglik[ind_pen] <- log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
       dim[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
-      cv[ind_pen]
       bic[ind_pen] <- log(nrow(X)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
         2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
       aic[ind_pen] <- 2 * (length(knots_sel[[ind_pen]]) + degree + 1) +
@@ -162,16 +161,16 @@ aridge_solver <- function(X, y, pen, degree,
   list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
        "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
-       "increasing" = increasing, "decreasing" = decreasing)
+       "dim" = dim, "loglik" = loglik)
 }
 #' @export
 aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2)[-c(1, 2 * length(x) + 2)],
-                            degree = 3,
-                            maxiter = 1000,
-                            epsilon = 1e-5,
-                            verbose = FALSE,
-                            tol = 1e-6) {
-  pen <- 10 ^ seq(-4, 4, length = 100)
+                    pen = 10 ^ seq(-3, 6, length = 100),
+                    degree = 3,
+                    maxiter = 10000,
+                    epsilon = 1e-5,
+                    verbose = FALSE,
+                    tol = 1e-6) {
   X <- splines2::bSpline(x, knots = knots, degree = degree, intercept = TRUE)
   XX <- crossprod(X)
   XX_band <- cbind(
@@ -179,7 +178,12 @@ aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2
     0)
   Xy <- crossprod(X, y)
   # Define sigma0
-  sigma0sq <- var(lm(y ~ X - 1)$residuals)
+  X_10 <- splines2::bSpline(
+    x,
+    knots = seq(min(x), max(x), length = 12)[-c(1, 12)],
+    degree = degree,
+    intercept = TRUE)
+  sigma0sq <- var(lm(y ~ X_10 - 1)$residuals)
   rm(X)
   # Define returned variables
   model <- X_sel <- knots_sel <- sel_ls <- par_ls <- vector("list", length(pen))
@@ -219,12 +223,12 @@ aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2
       par_ls[[ind_pen]][idx] <- model[[ind_pen]]$coefficients
       par_ls[[ind_pen]][!idx] <- 0
       loglik[ind_pen] <- log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
-      dimension[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
+      dim[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
       bic[ind_pen] <- log(ncol(XX_band)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
         2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
       aic[ind_pen] <- 2 * (length(knots_sel[[ind_pen]]) + degree + 1) +
         2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
-      ebic[ind_pen] <- bic[ind_pen] + 2 * lchoose(ncol(X), ncol(X_sel[[ind_pen]]))
+      ebic[ind_pen] <- bic[ind_pen] + 2 * lchoose(length(knots) + degree + 1, ncol(X_sel[[ind_pen]]))
       ind_pen <- ind_pen + 1
     }
     if (ind_pen > length(pen)) break
@@ -234,7 +238,7 @@ aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2
   sel_mat <- sel_ls %>%
     unlist() %>%
     round(digits = 1) %>%
-    matrix(ncol(X) - degree - 1)
+    matrix(length(knots))
   knots_sel_monotonous <- apply(sel_mat, 1, function(a) all(diff(a) <= 0))
   if (!all(knots_sel_monotonous)) {
     if (sum(!knots_sel_monotonous) >= 10) {
