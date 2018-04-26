@@ -6,7 +6,7 @@
 \title{Testing Crash Helmets}
 \format{A data frame with 132 rows and 2 variables:
 \describe{
-  \item{x}{Time afetr impact, in milliseconds}
+  \item{x}{Time after impact, in milliseconds}
   \item{y}{Head acceleration, in units of \eqn{g}}
   ...
 }}
