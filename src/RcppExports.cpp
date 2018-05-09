@@ -5,6 +5,19 @@
 
 using namespace Rcpp;
 
+// weight_design_band
+NumericMatrix weight_design_band(NumericVector w, NumericVector alpha, NumericMatrix B);
+RcppExport SEXP _aspline_weight_design_band(SEXP wSEXP, SEXP alphaSEXP, SEXP BSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(weight_design_band(w, alpha, B));
+    return rcpp_result_gen;
+END_RCPP
+}
 // band_weight
 NumericMatrix band_weight(NumericVector w, int diff);
 RcppExport SEXP _aspline_band_weight(SEXP wSEXP, SEXP diffSEXP) {
@@ -19,6 +32,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_aspline_weight_design_band", (DL_FUNC) &_aspline_weight_design_band, 3},
     {"_aspline_band_weight", (DL_FUNC) &_aspline_band_weight, 2},
     {NULL, NULL, 0}
 };
