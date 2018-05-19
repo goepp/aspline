@@ -4,8 +4,8 @@ library(splines2)
 library(lattice)
 library(bandsolve)
 
-set.seed(0)
-n <- 14
+set.seed(2)
+n <- 15
 lower_x <- -1
 upper_x <- 3
 sigma <- 0.1
@@ -21,6 +21,13 @@ w <- rnorm(nrow(X))
 
 comp <- block_design(X, degree)
 bandsolve::mat2rot(t(X) %*% sweep(X, MARGIN = 1, w, `*`)) - weight_design_band(w, comp$alpha, comp$B)
-
-
 solve(t(X) %*% sweep(X, MARGIN = 1, w, `*`)) - bandsolve(weight_design_band(w, comp$alpha, comp$B))
+all.equal(solve(t(X) %*% sweep(X, MARGIN = 1, w, `*`)), bandsolve(weight_design_band(w, comp$alpha, comp$B)))
+
+test_that("weight_design_band works correctly", {
+  expect_equal(solve(t(X) %*% sweep(X, MARGIN = 1, w, `*`)) %>% unname(),
+               bandsolve::bandsolve(weight_design_band(w, comp$alpha, comp$B)) %>% unname(),
+               tolerance = 1e-9)
+  }
+)
+

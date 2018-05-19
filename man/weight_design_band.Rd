@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{weight_design_band}
 \alias{weight_design_band}
-\title{Fast computation of \eqn{X ^ T diag(w) X} for Generalized Linear Model Solving}
+\title{Fast computation of \eqn{X ^ T \Omega X} for Generalized Linear Model Solving}
 \usage{
 weight_design_band(w, alpha, B)
 }
@@ -18,5 +18,5 @@ The matrix \eqn{X^T diag(w) X} where \code{X} is the design matrix and \code{W =
 a diagonal matrix of weights.
 }
 \description{
-Fast computation of \eqn{X ^ T diag(w) X} for Generalized Linear Model Solving
+Fast computation of \eqn{X ^ T \Omega X} for Generalized Linear Model Solving
 }

@@ -303,6 +303,68 @@ kcv <- function(x, y, pen = 10 ^ seq(-3, 3, length = 50), nfold = 10) {
   colSums(score_matrix)
 }
 #' @export
+hessian_solver_glm <- function(par, X, y, degree, pen, family,
+                               w = rep(1, ncol(X) - degree - 1)) {
+  if (family == "gaussian") {
+    W <- diag(length(par))
+    g_inv <- identity
+    g_p <- function(x) return(0)
+  }
+  if (family == "poisson") {
+    W <- diag(as.vector(X %*% par))
+    g_inv <- exp
+    g_p <- function(x) 1 / x
+  }
+  if (family == "binomial") {
+    temp <- as.vector(exp(-X %*% par))
+    W <- diag(temp / (1 + temp) ^ 2)
+    g_inv <- function(x) 1 / (1 + exp(-x))
+    g_p <- function(x) 1 / ((1 - x) * x)
+  }
+  D <- diff(diag(ncol(X)), differences = degree + 1)
+  mat <- t(X) %*% W %*% X  + pen * t(D) %*% diag(w) %*% D
+  vect <- t(X) %*% W %*% (y - X %*% par + g_inv(X %*% par))
+  # eta <- X %*% old_par
+  # mu <- exp(eta)
+  # vect <- t(X) %*% W %*% (eta + (y - mu) * g_p(mu))
+  as.vector(solve(mat, vect))
+}
+#' @export
+hessian_solver_glm_band <- function(par, X, y, B, alpha, pen, w, degree,
+                                    family = c("gaussian", "binomial", "poisson")) {
+  family <- match.arg(family)
+  if (family == "gaussian") glm_weight <- rep(1, length(par))
+  if (family == "poisson") glm_weight <- as.vector(X %*% par)
+  if (family == "binomial") {
+    temp <- as.vector(exp(-X %*% par))
+    glm_weight <- temp / (1 + temp) ^ 2
+  }
+  XWX_band <- cbind(weight_design_band(glm_weight, alpha, B), 0)
+  mat <- XWX_band + pen * band_weight(w, degree + 1)
+  vect <- sweep(t(X), MARGIN = 2, glm_weight, `*`) %*% y
+  as.vector(bandsolve::bandsolve(mat, vect))
+}
+#' @export
+wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
+                              family = c("normal", "poisson", "binomial"),
+                              old_par = rep(1, ncol(X)),
+                              w = rep(1, ncol(X) - degree - 1),
+                              maxiter = 1000) {
+  family <- match.arg(family)
+  for (iter in 1:maxiter) {
+    as.vector((X %*% old_par)) %>% plot()
+    # par <- hessian_solver_glm_band(old_par, X, y, B, alpha, pen, w, degree, family = family)
+    par <- hessian_solver_glm(old_par, X, y, degree, pen, family, w)
+    (par) %>% plot()
+    idx <- old_par != 0
+    rel_error <- max(abs(par - old_par)[idx] / abs(old_par)[idx])
+    if (rel_error < 1e-5) break
+    old_par <- par
+  }
+  if (iter == maxiter) warnings("Warning: NR did not converge.")
+  list('par' = par, 'iter' = iter)
+}
+#' @export
 aridge_solver_glm_slow <- function(X, y, pen, degree,
                                    family = c("binomial", "poisson", "normal"),
                                    maxiter = 1000,
@@ -398,3 +460,4 @@ aridge_solver_glm_slow <- function(X, y, pen, degree,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
        "dim" = dim, "loglik" = loglik)
 }
+

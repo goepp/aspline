@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Fast computation of \eqn{X ^ T diag(w) X} for Generalized Linear Model Solving
+//' Fast computation of \eqn{X ^ T \Omega X} for Generalized Linear Model Solving
 //'
 //' @param w The vector of weights.
 //' @param alpha Vector of indexes representing the start of blocks of the design matrix, as given by \link{block_design}.
