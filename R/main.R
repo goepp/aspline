@@ -80,11 +80,11 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
 #' @export
 aridge_solver <- function(X, y, pen, degree,
-                          maxiter = 1000,
-                          epsilon = 1e-5,
-                          verbose = FALSE,
-                          diff = degree + 1,
-                          tol = 1e-6) {
+                                  maxiter = 1000,
+                                  epsilon = 1e-5,
+                                  verbose = FALSE,
+                                  tol = 1e-6) {
+  diff <- degree + 1
   XX <- crossprod(X)
   XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
   Xy <- crossprod(X, y)
@@ -95,17 +95,17 @@ aridge_solver <- function(X, y, pen, degree,
   aic <- bic <- ebic <- pen * NA
   dim <- loglik <- pen * NA
   # Initialize values
-  old_sel <- rep(1, ncol(X) - diff)
+  old_sel <- rep(1, ncol(X) - degree - 1)
   par <- rep(1, ncol(X))
-  w <- rep(1, ncol(X) - diff)
+  w <- rep(1, ncol(X) - degree)
   ind_pen <- 1
   # Main loop
   for (iter in 1:maxiter) {
     par <- wridge_solver(XX_band, Xy, degree,
                          pen[ind_pen], w,
                          old_par = par)
-    w <- 1 / (diff(par, differences = diff) ^ 2 + epsilon ^ 2)
-    sel <- w * diff(par, differences = diff) ^ 2
+    w <- 1 / (diff(par, differences = degree + 1) ^ 2 + epsilon ^ 2)
+    sel <- w * diff(par, differences = degree + 1) ^ 2
     if (verbose) {
       cat('iter =', iter, ' sum_sel = ', sum(sel), '\n')
       plot(sel, ylim = c(0, 1), main =
@@ -125,15 +125,20 @@ aridge_solver <- function(X, y, pen, degree,
         abline(v = knots_sel[[ind_pen]], col = "red")
       }
       par_ls[[ind_pen]] <- rep(NA, ncol(X))
-      idx <- c(sel > 0.99, rep(TRUE, diff))
+      idx <- c(sel > 0.99, rep(TRUE, degree + 1))
       par_ls[[ind_pen]][idx] <- model[[ind_pen]]$coefficients
       par_ls[[ind_pen]][!idx] <- 0
-      loglik[ind_pen] <- log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      loglik[ind_pen] <- sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq)
       dim[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
-      bic[ind_pen] <- log(nrow(X)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
-        2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
-      aic[ind_pen] <- 2 * (length(knots_sel[[ind_pen]]) + degree + 1) +
-        2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      aic[ind_pen] <- 2 * dim[ind_pen] +
+        sum(model[[ind_pen]]$residuals ^ 2 / sigma0sq)
+      # temp <- AIC(model[ind_pen])
+      bic[ind_pen] <- log(nrow(X)) * dim[ind_pen] +
+        sum(model[[ind_pen]]$residuals ^ 2 / sigma0sq)
+      # aic[ind_pen] <- 2 * dim[ind_pen] +
+      #   2 * log(sum(model[[ind_pen]]$residuals ^ 2 / 1))
+      # bic[ind_pen] <- log(nrow(X)) * dim[ind_pen] +
+      #   2 * log(sum(model[[ind_pen]]$residuals ^ 2 / 1))
       ebic[ind_pen] <- bic[ind_pen] + 2 * lchoose(ncol(X), ncol(X_sel[[ind_pen]]))
       ind_pen <- ind_pen + 1
     }
@@ -152,26 +157,39 @@ aridge_solver <- function(X, y, pen, degree,
                      sum(!knots_sel_monotonous),
                      " knots are dropped and then reselected"))
     } else {
-    warning(paste0("The models are not nested:\n",
-                   "Knots number ", paste(which(!knots_sel_monotonous), collapse = ', '),
-                   " are dropped and then reselected"))
+      warning(paste0("The models are not nested:\n",
+                     "Knots number ", paste(which(!knots_sel_monotonous), collapse = ', '),
+                     " are dropped and then reselected"))
     }
   }
   # Print regularization path
-  regul_df <- dplyr::data_frame(penalty = rep(pen, each = ncol(X)),
-                         index = rep(1:(ncol(X)), length(pen)),
-                         param = par_ls %>% unlist())
+  regul_df <- tibble::data_frame(penalty = rep(pen, each = ncol(X)),
+                                 index = rep(1:(ncol(X)), length(pen)),
+                                 param = par_ls %>% unlist())
   path <- ggplot2::ggplot(regul_df, aes(penalty, param, color = as.factor(index))) +
     ggplot2::geom_line() +
     ggplot2::scale_x_log10() +
     ggplot2::theme(legend.position = 'none') +
     ggplot2::geom_vline(xintercept = pen[which(diff(apply(sel_mat, 2, sum)) != 0) + 1],
-               size = 0.2)
+                        size = 0.2)
+  criterion <- data_frame(dim = dim,
+                          pen = pen,
+                          aic = aridge$aic,
+                          bic = aridge$bic,
+                          ebic = aridge$ebic) %>%
+    reshape2::melt(id.vars = c("pen", "dim"))
+  crit_plot <- ggplot(criterion, aes(dim, value, color = variable)) +
+    geom_line() +
+    scale_x_log10() +
+    scale_y_log10() +
+    geom_vline(xintercept = c(aridge$dim[which.min(aridge$aic)],
+                              aridge$dim[which.min(aridge$bic)],
+                              aridge$dim[which.min(aridge$ebic)]))
   # Return values
   list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
        "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
-       "dim" = dim, "loglik" = loglik)
+       "dim" = dim, "loglik" = loglik, "crit_plot" = crit_plot)
 }
 #' @export
 aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2)[-c(1, 2 * length(x) + 2)],
@@ -460,4 +478,98 @@ aridge_solver_glm_slow <- function(X, y, pen, degree,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
        "dim" = dim, "loglik" = loglik)
 }
-
+#' @export
+aridge_solver_old <- function(X, y, pen, degree,
+                          maxiter = 1000,
+                          epsilon = 1e-5,
+                          verbose = FALSE,
+                          diff = degree + 1,
+                          tol = 1e-6) {
+  XX <- crossprod(X)
+  XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
+  Xy <- crossprod(X, y)
+  # Define sigma0
+  sigma0sq <- var(lm(y ~ X - 1)$residuals)
+  # Define returned variables
+  model <- X_sel <- knots_sel <- sel_ls <- par_ls <- vector("list", length(pen))
+  aic <- bic <- ebic <- pen * NA
+  dim <- loglik <- pen * NA
+  # Initialize values
+  old_sel <- rep(1, ncol(X) - diff)
+  par <- rep(1, ncol(X))
+  w <- rep(1, ncol(X) - diff)
+  ind_pen <- 1
+  # Main loop
+  for (iter in 1:maxiter) {
+    par <- wridge_solver(XX_band, Xy, degree,
+                         pen[ind_pen], w,
+                         old_par = par)
+    w <- 1 / (diff(par, differences = diff) ^ 2 + epsilon ^ 2)
+    sel <- w * diff(par, differences = diff) ^ 2
+    if (verbose) {
+      cat('iter =', iter, ' sum_sel = ', sum(sel), '\n')
+      plot(sel, ylim = c(0, 1), main =
+             cat('iter =', iter, ' sum_sel = ', sum(sel), '\n'))
+    }
+    converge <- max(abs(old_sel - sel)) < tol
+    if (converge) {
+      sel_ls[[ind_pen]] <- sel
+      knots_sel[[ind_pen]] <- knots[sel > 0.99]
+      X_sel[[ind_pen]] <- splines2::bSpline(
+        x, knots = knots_sel[[ind_pen]], intercept = TRUE, degree = degree)
+      model[[ind_pen]] <- lm(y ~ X_sel[[ind_pen]] - 1)
+      if (verbose) {
+        plot(x, y, col = "gray")
+        lines(x, predict(model[[ind_pen]]), col = "red")
+        lines(x, predict(lm(y ~ X - 1)), col = "blue")
+        abline(v = knots_sel[[ind_pen]], col = "red")
+      }
+      par_ls[[ind_pen]] <- rep(NA, ncol(X))
+      idx <- c(sel > 0.99, rep(TRUE, diff))
+      par_ls[[ind_pen]][idx] <- model[[ind_pen]]$coefficients
+      par_ls[[ind_pen]][!idx] <- 0
+      loglik[ind_pen] <- log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      dim[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
+      bic[ind_pen] <- log(nrow(X)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
+        2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      aic[ind_pen] <- 2 * (length(knots_sel[[ind_pen]]) + degree + 1) +
+        2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      ebic[ind_pen] <- bic[ind_pen] + 2 * lchoose(ncol(X), ncol(X_sel[[ind_pen]]))
+      ind_pen <- ind_pen + 1
+    }
+    if (ind_pen > length(pen)) break
+    old_sel <- sel
+  }
+  # Diagnostic for bad behavior of Adaptive Ridge
+  sel_mat <- sel_ls %>%
+    unlist() %>%
+    round(digits = 1) %>%
+    matrix(., ncol(X) - degree - 1)
+  knots_sel_monotonous <- apply(sel_mat, 1, function(a) all(diff(a) <= 0))
+  if (!all(knots_sel_monotonous)) {
+    if (sum(!knots_sel_monotonous) >= 10) {
+      warning(paste0("The models are not nested:\n",
+                     sum(!knots_sel_monotonous),
+                     " knots are dropped and then reselected"))
+    } else {
+      warning(paste0("The models are not nested:\n",
+                     "Knots number ", paste(which(!knots_sel_monotonous), collapse = ', '),
+                     " are dropped and then reselected"))
+    }
+  }
+  # Print regularization path
+  regul_df <- dplyr::data_frame(penalty = rep(pen, each = ncol(X)),
+                                index = rep(1:(ncol(X)), length(pen)),
+                                param = par_ls %>% unlist())
+  path <- ggplot2::ggplot(regul_df, aes(penalty, param, color = as.factor(index))) +
+    ggplot2::geom_line() +
+    ggplot2::scale_x_log10() +
+    ggplot2::theme(legend.position = 'none') +
+    ggplot2::geom_vline(xintercept = pen[which(diff(apply(sel_mat, 2, sum)) != 0) + 1],
+                        size = 0.2)
+  # Return values
+  list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
+       "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
+       "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
+       "dim" = dim, "loglik" = loglik)
+}
