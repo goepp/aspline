@@ -172,17 +172,17 @@ aridge_solver <- function(X, y, pen, degree,
                         size = 0.2)
   criterion <- data_frame(dim = dim,
                           pen = pen,
-                          aic = aridge$aic,
-                          bic = aridge$bic,
-                          ebic = aridge$ebic) %>%
+                          aic = aic,
+                          bic = bic,
+                          ebic = ebic) %>%
     reshape2::melt(id.vars = c("pen", "dim"))
   crit_plot <- ggplot(criterion, aes(dim, value, color = variable)) +
     geom_line() +
     scale_x_log10() +
     scale_y_log10() +
-    geom_vline(xintercept = c(aridge$dim[which.min(aridge$aic)],
-                              aridge$dim[which.min(aridge$bic)],
-                              aridge$dim[which.min(aridge$ebic)]))
+    geom_vline(xintercept = c(dim[which.min(aic)],
+                              dim[which.min(bic)],
+                              dim[which.min(ebic)]))
   # Return values
   list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
        "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
