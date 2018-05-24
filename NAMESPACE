@@ -3,6 +3,7 @@
 export("%>%")
 export(aridge_solver)
 export(aridge_solver_glm_slow)
+export(aridge_solver_old)
 export(aspline)
 export(band_weight)
 export(block_design)

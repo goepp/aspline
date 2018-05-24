@@ -97,7 +97,7 @@ aridge_solver <- function(X, y, pen, degree,
   # Initialize values
   old_sel <- rep(1, ncol(X) - degree - 1)
   par <- rep(1, ncol(X))
-  w <- rep(1, ncol(X) - degree)
+  w <- rep(1, ncol(X) - degree - 1)
   ind_pen <- 1
   # Main loop
   for (iter in 1:maxiter) {
@@ -128,18 +128,16 @@ aridge_solver <- function(X, y, pen, degree,
       idx <- c(sel > 0.99, rep(TRUE, degree + 1))
       par_ls[[ind_pen]][idx] <- model[[ind_pen]]$coefficients
       par_ls[[ind_pen]][!idx] <- 0
-      loglik[ind_pen] <- sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq)
+      loglik[ind_pen] <- 1 / 2 * sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq)
       dim[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
-      aic[ind_pen] <- 2 * dim[ind_pen] +
-        sum(model[[ind_pen]]$residuals ^ 2 / sigma0sq)
+      aic[ind_pen] <- 2 * dim[ind_pen] + 2 * loglik[ind_pen]
+      bic[ind_pen] <- log(nrow(X)) * dim[ind_pen] + 2 * loglik[ind_pen]
+      ebic[ind_pen] <- bic[ind_pen] + 2 * lchoose(ncol(X), ncol(X_sel[[ind_pen]]))
       # temp <- AIC(model[ind_pen])
-      bic[ind_pen] <- log(nrow(X)) * dim[ind_pen] +
-        sum(model[[ind_pen]]$residuals ^ 2 / sigma0sq)
       # aic[ind_pen] <- 2 * dim[ind_pen] +
       #   2 * log(sum(model[[ind_pen]]$residuals ^ 2 / 1))
       # bic[ind_pen] <- log(nrow(X)) * dim[ind_pen] +
       #   2 * log(sum(model[[ind_pen]]$residuals ^ 2 / 1))
-      ebic[ind_pen] <- bic[ind_pen] + 2 * lchoose(ncol(X), ncol(X_sel[[ind_pen]]))
       ind_pen <- ind_pen + 1
     }
     if (ind_pen > length(pen)) break

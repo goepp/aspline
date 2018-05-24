@@ -5,7 +5,7 @@
 \title{Fit B-splines with automatic knot selection.}
 \usage{
 aridge_solver(X, y, pen, degree, maxiter = 1000, epsilon = 1e-05,
-  verbose = FALSE, diff = degree + 1, tol = 1e-06)
+  verbose = FALSE, tol = 1e-06)
 }
 \arguments{
 \item{X}{design matrix}
@@ -23,10 +23,10 @@ An Adaptive Ridge Procedure for L0 Regularization}.)}
 
 \item{verbose}{Whether to print details at each step of the iterative procedure.}
 
+\item{tol}{The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.}
+
 \item{diff}{Order of the differences on the parameters. The value \code{degree + 1} is necessary to perform
 selection of the knots.}
-
-\item{tol}{The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.}
 }
 \description{
 Fit B-splines with automatic knot selection.
