@@ -87,7 +87,7 @@ aridge_solver <- function(x, y, knots,
                           epsilon = 1e-5,
                           verbose = FALSE,
                           tol = 1e-6) {
-  X <- splines2::bSpline(x, knots = knots, degree = degree, intercept = TRUE)
+  X <- splines2::bSpline(x, knots = knots, intercept = TRUE, degree = degree)
   XX <- crossprod(X)
   XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
   Xy <- crossprod(X, y)
