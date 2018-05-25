@@ -186,8 +186,11 @@ aridge_solver <- function(x, y, knots,
     geom_vline(xintercept = c(dim[which.min(aic)],
                               dim[which.min(bic)],
                               dim[which.min(ebic)]))
+  fit = list("aic" = model[[which.min(aic)]],
+             "bic" = model[[which.min(bic)]],
+             "ebic" = model[[which.min(ebic)]])
   # Return values
-  list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
+  list("fit" = fit, "sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
        "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
        "dim" = dim, "loglik" = loglik, "crit_plot" = crit_plot)
