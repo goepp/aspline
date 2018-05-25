@@ -4,13 +4,15 @@
 \alias{aridge_solver}
 \title{Fit B-splines with automatic knot selection.}
 \usage{
-aridge_solver(X, y, pen, degree, maxiter = 1000, epsilon = 1e-05,
-  verbose = FALSE, tol = 1e-06)
+aridge_solver(x, y, knots, pen = 10^seq(-3, 3, length = 100), degree = 3L,
+  maxiter = 1000, epsilon = 1e-05, verbose = FALSE, tol = 1e-06)
 }
 \arguments{
-\item{X}{design matrix}
+\item{x}{Data x values}
 
 \item{y}{Data y values}
+
+\item{knots}{Knots}
 
 \item{pen}{A vector of positive penalty values. The adaptive spline regression is performed for every value of pen}
 

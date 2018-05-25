@@ -67,8 +67,9 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #'
 #' Fit B-splines with automatic knot selection.
 #'
-#' @param X design matrix
+#' @param x Data x values
 #' @param y Data y values
+#' @param knots Knots
 #' @param degree The degree of the splines. Recommended value is 3, which corresponds to natural splines.
 #' @param pen A vector of positive penalty values. The adaptive spline regression is performed for every value of pen
 #' @param maxiter Maximum number of iterations  in the main loop.
@@ -79,14 +80,14 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' selection of the knots.
 #' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
 #' @export
-aridge_solver <- function(X, y,
+aridge_solver <- function(x, y, knots,
                           pen = 10 ^ seq(-3, 3, length = 100),
                           degree = 3L,
                           maxiter = 1000,
                           epsilon = 1e-5,
                           verbose = FALSE,
                           tol = 1e-6) {
-  diff <- degree + 1
+  X <- splines2::bSpline(x, knots = knots, degree = degree, intercept = TRUE)
   XX <- crossprod(X)
   XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
   Xy <- crossprod(X, y)
