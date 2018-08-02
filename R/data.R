@@ -37,7 +37,7 @@
 #' @references Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \italic{Semiparametric Regression}, Cambridge University Press.
 #' \url{http://stat.tamu.edu/~carroll/semiregbook/}
 "fossil"
-#' Bladder Cancer aCGH data
+#' Bladder Cancer aCGH profile data
 #'
 #' A dataset of 500 observations corresponding to 500 probes of the aCGH profile of a bladder cancer patient.
 #' The original data are provided by \cite{Stransky et al. (2006)}. This dataset consists of probes 1 through 500 of individual 1.
@@ -53,3 +53,18 @@
 #' Pinkel, D. and Radvanyi, F. (2006). Regional Copy Number Independent Deregulation
 #' of Transcription in Cancer', \italic{Nature Genetics} 38(12), 1386-1396.
 "bladder"
+#' Yearly number of coal mine disasters in Britain
+#'
+#' A data of 112 observations registering the yearly number of coal mine disasters in Britain from 1851 to 1962.
+#' The data comes from \cite{Diggle et al. (1988)} and has been used for spline regression by \cite{Eilers et al. (1996)}.
+#'
+#' @format A data frame with 112 observations and 2 variables:
+#' \describe{
+#'   \item{x}{year}
+#'   \item{y}{number of coal mine disasters}
+#' }
+#' @source Diggle, P. and Marron, J. S. (1988). `Equivalence of Smoothing Parameter Selectors
+#' in Density and Intensity Estimation', \italic{Journal of the American Statistical Association} 83(403), 793-800.
+#' @reference Eilers, P. H. C. and Marx, B. D. (1996). `Flexible Smoothing with B-splines and Penalties', \italic{Statistical Science} 11(2), 89-102.
+
+

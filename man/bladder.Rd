@@ -3,7 +3,7 @@
 \docType{data}
 \name{bladder}
 \alias{bladder}
-\title{Bladder Cancer aCGH data}
+\title{Bladder Cancer aCGH profile data}
 \format{A data frame with 500 observations and 2 variables:
 \describe{
   \item{x}{probe number}
