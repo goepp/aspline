@@ -33,7 +33,23 @@
 #'   \item{strontium}{Ratio of strontium isotopes}
 #'   ...
 #' }
-#' @source Bralower, T.T, FUllagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \italic{Geological Society of America Bulletin}, 109, 1421-1442/
+#' @source Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \italic{Geological Society of America Bulletin}, 109, 1421-1442.
 #' @references Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \italic{Semiparametric Regression}, Cambridge University Press.
 #' \url{http://stat.tamu.edu/~carroll/semiregbook/}
 "fossil"
+#' Bladder Cancer aCGH data
+#'
+#' A dataset of 500 observations corresponding to 500 probes of the aCGH profile of a bladder cancer patient.
+#' The original data are provided by \cite{Stransky et al. (2006)}. This dataset consists of probes 1 through 500 of individual 1.
+#'
+#' @format A data frame with 500 observations and 2 variables:
+#' \describe{
+#'   \item{x}{probe number}
+#'   \item{y}{aCGH profile value}
+#' }
+#' @source Stransky, N., Vallot, C., Reyal, F., Bernard-Pierrot, I., de Medina, S. G. D., Segraves,
+#' R., de Rycke, Y., Elvin, P., Cassidy, A., Spraggon, C., Graham, A., Southgate, J.,
+#' Asselain, B., Allory, Y., Abbou, C. C., Albertson, D. G., Thiery, J. P., Chopin, D. K.,
+#' Pinkel, D. and Radvanyi, F. (2006). Regional Copy Number Independent Deregulation
+#' of Transcription in Cancer', \italic{Nature Genetics} 38(12), 1386-1396.
+"bladder"

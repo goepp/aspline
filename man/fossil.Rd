@@ -11,7 +11,7 @@
   ...
 }}
 \source{
-Bralower, T.T, FUllagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \italic{Geological Society of America Bulletin}, 109, 1421-1442/
+Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \italic{Geological Society of America Bulletin}, 109, 1421-1442.
 }
 \usage{
 fossil
