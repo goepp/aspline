@@ -1,12 +1,12 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Fast computation of \eqn{X ^ T \Omega X} for Generalized Linear Model Solving
+//' Fast computation of weighted design matrix for generalized linear model
 //'
-//' @param w The vector of weights.
+//' @param w Vector of weights.
 //' @param alpha Vector of indexes representing the start of blocks of the design matrix, as given by \link{block_design}.
-//' @param B The matrix \code{X} given in compressed block format, as given by \link{block_design}.
-//' @return The matrix \eqn{X^T diag(w) X} where \code{X} is the design matrix and \code{W = diag(w)} is
+//' @param B Design matrix in compressed block format, as given by \link{block_design}.
+//' @return Weighted design matrix \eqn{X^T diag(w) X} where \code{X} is the design matrix and \code{W = diag(w)} is
 //' a diagonal matrix of weights.
 //' @export
 // [[Rcpp::export]]

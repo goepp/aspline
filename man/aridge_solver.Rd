@@ -4,8 +4,9 @@
 \alias{aridge_solver}
 \title{Fit B-splines with automatic knot selection.}
 \usage{
-aridge_solver(x, y, knots, pen = 10^seq(-3, 3, length = 100), degree = 3L,
-  maxiter = 1000, epsilon = 1e-05, verbose = FALSE, tol = 1e-06)
+aridge_solver(x, y, knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
+  pen = 10^seq(-3, 3, length = 100), degree = 3L, maxiter = 1000,
+  epsilon = 1e-05, verbose = FALSE, tol = 1e-06)
 }
 \arguments{
 \item{x}{Data x values}

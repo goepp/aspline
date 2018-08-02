@@ -23,3 +23,17 @@
 #' }
 #' @source \url{http://people.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2/TrinityWorkshop/Workshop-material-Simon/Intro_to_splines/Exercises/}
 "montreal"
+#' Fossil data
+#'
+#' A dataset with 106 observations on fossil shells from the \code{SemiPar} package (\url{https://CRAN.R-project.org/package=SemiPar}).
+#'
+#' @format A data frame with 106 observations and 2 variables:
+#' \describe{
+#'   \item{age}{The age of fossils, in millions of years}
+#'   \item{strontium}{Ratio of strontium isotopes}
+#'   ...
+#' }
+#' @source Bralower, T.T, FUllagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \italic{Geological Society of America Bulletin}, 109, 1421-1442/
+#' @references Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \italic{Semiparametric Regression}, Cambridge University Press.
+#' \url{http://stat.tamu.edu/~carroll/semiregbook/}
+"fossil"

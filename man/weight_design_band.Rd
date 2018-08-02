@@ -2,21 +2,21 @@
 % Please edit documentation in R/RcppExports.R
 \name{weight_design_band}
 \alias{weight_design_band}
-\title{Fast computation of \eqn{X ^ T \Omega X} for Generalized Linear Model Solving}
+\title{Fast computation of weighted design matrix for generalized linear model}
 \usage{
 weight_design_band(w, alpha, B)
 }
 \arguments{
-\item{w}{The vector of weights.}
+\item{w}{Vector of weights.}
 
 \item{alpha}{Vector of indexes representing the start of blocks of the design matrix, as given by \link{block_design}.}
 
-\item{B}{The matrix \code{X} given in compressed block format, as given by \link{block_design}.}
+\item{B}{Design matrix in compressed block format, as given by \link{block_design}.}
 }
 \value{
-The matrix \eqn{X^T diag(w) X} where \code{X} is the design matrix and \code{W = diag(w)} is
+Weighted design matrix \eqn{X^T diag(w) X} where \code{X} is the design matrix and \code{W = diag(w)} is
 a diagonal matrix of weights.
 }
 \description{
-Fast computation of \eqn{X ^ T \Omega X} for Generalized Linear Model Solving
+Fast computation of weighted design matrix for generalized linear model
 }

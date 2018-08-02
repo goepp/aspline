@@ -5,6 +5,18 @@
 
 using namespace Rcpp;
 
+// band_weight
+NumericMatrix band_weight(NumericVector w, int diff);
+RcppExport SEXP _aspline_band_weight(SEXP wSEXP, SEXP diffSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    Rcpp::traits::input_parameter< int >::type diff(diffSEXP);
+    rcpp_result_gen = Rcpp::wrap(band_weight(w, diff));
+    return rcpp_result_gen;
+END_RCPP
+}
 // weight_design_band
 NumericMatrix weight_design_band(NumericVector w, NumericVector alpha, NumericMatrix B);
 RcppExport SEXP _aspline_weight_design_band(SEXP wSEXP, SEXP alphaSEXP, SEXP BSEXP) {
@@ -18,22 +30,10 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// band_weight
-NumericMatrix band_weight(NumericVector w, int diff);
-RcppExport SEXP _aspline_band_weight(SEXP wSEXP, SEXP diffSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
-    Rcpp::traits::input_parameter< int >::type diff(diffSEXP);
-    rcpp_result_gen = Rcpp::wrap(band_weight(w, diff));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_aspline_weight_design_band", (DL_FUNC) &_aspline_weight_design_band, 3},
     {"_aspline_band_weight", (DL_FUNC) &_aspline_band_weight, 2},
+    {"_aspline_weight_design_band", (DL_FUNC) &_aspline_weight_design_band, 3},
     {NULL, NULL, 0}
 };
 

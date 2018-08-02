@@ -2,20 +2,20 @@
 % Please edit documentation in R/RcppExports.R
 \name{band_weight}
 \alias{band_weight}
-\title{Create the matrix of weights}
+\title{Create the penalty matrix}
 \usage{
 band_weight(w, diff)
 }
 \arguments{
-\item{w}{The vector of weights}
+\item{w}{Vector of weights}
 
-\item{diff}{The order of the differences to be applied to the parameters. Must be a strictly positive integer}
+\item{diff}{Order of the differences to be applied to the parameters. Must be a strictly positive integer}
 }
 \value{
-The matrix of weights \eqn{D^T diag(w) D} where
+Weighted penalty matrix \eqn{D^T diag(w) D} where
  \code{D <- diff(diag(length(w) + diff), differences = diff)}. Only the non-null superdiagonals of
- the weight matrixare returned, each column corresponding to a diagonal.
+ the weight matrix are returned, each column corresponding to a diagonal.
 }
 \description{
-Create the matrix of weights
+Create the penalty matrix
 }

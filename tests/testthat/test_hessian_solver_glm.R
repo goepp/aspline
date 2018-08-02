@@ -7,7 +7,11 @@ library(lattice)
 load_all()
 
 data(coal)
-
+coal_year <- coal %>%
+  mutate(year = floor(date))
+count <- coal_year %>%
+  count(year) %>%
+  mutate(year = as.integer(year))
 x <- count$year
 y <- count$n
 n <- length(x)
@@ -29,18 +33,20 @@ alpha <- comp$alpha
 
 set.seed(0)
 par <- rnorm(ncol(X))
-w = rep(1, ncol(X) - degree - 1)
+w <- rep(1, ncol(X) - degree - 1)
 g_inv <- exp
-g_p <- function(x) 1 / x
+g_p <- function(x) return(1 / x)
 
 ## hessian_solver_glm
-W <- diag(as.vector(X %*% par))
+Omega <- diag(as.vector(X %*% par))
 D <- diff(diag(ncol(X)), differences = degree + 1)
-mat_1 <- t(X) %*% W %*% X  + pen * t(D) %*% diag(w) %*% D
+mat_1 <- t(X) %*% Omega %*% X  + pen * t(D) %*% diag(w) %*% D
 
 ## hessian_solver_glm_band
 glm_weight <- as.vector(X %*% par)
 XWX_band <- cbind(weight_design_band(glm_weight, alpha, B), 0)
+dim(XWX_band)
+dim(band_weight(w, degree + 1))
 mat_2 <- XWX_band + pen * band_weight(w, degree + 1)
 
 # They are the same

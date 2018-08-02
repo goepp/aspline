@@ -26,16 +26,6 @@ hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
   if (ncol(XX_band) != diff + 1) stop("Error: XX_band must have diff + 1 columns")
   bandsolve::bandsolve(XX_band + pen * band_weight(w, diff), Xy) - par
 }
-#' @export
-hessian_solver_glm <- function(par, B, alpha, y, pen, w, diff,
-                               family = c("gaussian", "binomial", "poisson")) {
-  if (family == "gaussian") glm_weight <- rep(1, length(par))
-  if (family == "poisson") glm_weight <- as.vector(X %*% par)
-  XWX_band <- weight_design_band(glm_weight, alpha, B)
-  mat <- XWX_band + pen * band_weight(w, diff)
-  vect <- t(X) %*% W %*% (y - X %*% par) - pen * w * par
-  bandsolve::bandsolve(mat, vect)
-}
 #' Fit B-Splines with weighted penalization over differences of parameters
 #'
 #' @param XX_band The matrix \eqn{X^T X} where \code{X} is the design matrix. This argument is given
@@ -80,7 +70,8 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' selection of the knots.
 #' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
 #' @export
-aridge_solver <- function(x, y, knots,
+aridge_solver <- function(x, y,
+                          knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
                           pen = 10 ^ seq(-3, 3, length = 100),
                           degree = 3L,
                           maxiter = 1000,
@@ -93,6 +84,7 @@ aridge_solver <- function(x, y, knots,
   Xy <- crossprod(X, y)
   # Define sigma0
   sigma0sq <- var(lm(y ~ X - 1)$residuals)
+  # sigma0sq <- var(y)
   # Define returned variables
   model <- X_sel <- knots_sel <- sel_ls <- par_ls <- vector("list", length(pen))
   aic <- bic <- ebic <- pen * NA
@@ -109,18 +101,14 @@ aridge_solver <- function(x, y, knots,
                          old_par = par)
     w <- 1 / (diff(par, differences = degree + 1) ^ 2 + epsilon ^ 2)
     sel <- w * diff(par, differences = degree + 1) ^ 2
-    if (verbose) {
-      cat('iter =', iter, ' sum_sel = ', sum(sel), '\n')
-      plot(sel, ylim = c(0, 1), main =
-             cat('iter =', iter, ' sum_sel = ', sum(sel), '\n'))
-    }
     converge <- max(abs(old_sel - sel)) < tol
     if (converge) {
       sel_ls[[ind_pen]] <- sel
       knots_sel[[ind_pen]] <- knots[sel > 0.99]
-      X_sel[[ind_pen]] <- splines2::bSpline(
+      design <- splines2::bSpline(
         x, knots = knots_sel[[ind_pen]], intercept = TRUE, degree = degree)
-      model[[ind_pen]] <- lm(y ~ X_sel[[ind_pen]] - 1)
+      X_sel[[ind_pen]] <- design
+      model[[ind_pen]] <- lm(y ~ design - 1)
       if (verbose) {
         plot(x, y, col = "gray")
         lines(x, predict(model[[ind_pen]]), col = "red")
@@ -333,9 +321,9 @@ hessian_solver_glm <- function(par, X, y, degree, pen, family,
     g_p <- function(x) return(0)
   }
   if (family == "poisson") {
-    W <- diag(as.vector(X %*% par))
     g_inv <- exp
     g_p <- function(x) 1 / x
+    W <- diag(g_inv(as.vector(X %*% par)))
   }
   if (family == "binomial") {
     temp <- as.vector(exp(-X %*% par))
@@ -345,25 +333,40 @@ hessian_solver_glm <- function(par, X, y, degree, pen, family,
   }
   D <- diff(diag(ncol(X)), differences = degree + 1)
   mat <- t(X) %*% W %*% X  + pen * t(D) %*% diag(w) %*% D
-  vect <- t(X) %*% W %*% (y - X %*% par + g_inv(X %*% par))
-  # eta <- X %*% old_par
-  # mu <- exp(eta)
-  # vect <- t(X) %*% W %*% (eta + (y - mu) * g_p(mu))
+  # vect <- t(X) %*% W %*% (y - X %*% par + g_inv(X %*% par)) # OLD AND FALSE
+  vect <- t(X) %*% (W %*% X %*% par + y - g_inv(X %*% par))
   as.vector(solve(mat, vect))
 }
 #' @export
 hessian_solver_glm_band <- function(par, X, y, B, alpha, pen, w, degree,
                                     family = c("gaussian", "binomial", "poisson")) {
   family <- match.arg(family)
-  if (family == "gaussian") glm_weight <- rep(1, length(par))
-  if (family == "poisson") glm_weight <- as.vector(X %*% par)
+  if (family == "gaussian") {
+    glm_weight <- rep(1, length(par))
+    g_inv <- identity
+    g_p <- function(x) return(0)
+  }
+  if (family == "poisson") {
+    glm_weight <- g_inv(as.vector(X %*% par))
+    g_inv <- exp
+    g_p <- function(x) 1 / x
+  }
   if (family == "binomial") {
     temp <- as.vector(exp(-X %*% par))
     glm_weight <- temp / (1 + temp) ^ 2
+    g_inv <- function(x) 1 / (1 + exp(-x))
+    g_p <- function(x) 1 / ((1 - x) * x)
   }
+  # if (family == "gaussian") glm_weight <- rep(1, length(par))
+  # if (family == "poisson") glm_weight <- as.vector(X %*% par)
+  # if (family == "binomial") {
+  #   temp <- as.vector(exp(-X %*% par))
+  #   glm_weight <- temp / (1 + temp) ^ 2
+  # }
   XWX_band <- cbind(weight_design_band(glm_weight, alpha, B), 0)
   mat <- XWX_band + pen * band_weight(w, degree + 1)
-  vect <- sweep(t(X), MARGIN = 2, glm_weight, `*`) %*% y
+  # vect <- sweep(t(X), MARGIN = 2, glm_weight, `*`) %*% y
+  vect <- crossprod(X, sweep(X, 1, glm_weight, `*`) %*% par + y - g_inv(X %*% par))
   as.vector(bandsolve::bandsolve(mat, vect))
 }
 #' @export
@@ -374,10 +377,10 @@ wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
                               maxiter = 1000) {
   family <- match.arg(family)
   for (iter in 1:maxiter) {
-    as.vector((X %*% old_par)) %>% plot()
+    # as.vector((X %*% old_par)) %>% plot()
     # par <- hessian_solver_glm_band(old_par, X, y, B, alpha, pen, w, degree, family = family)
     par <- hessian_solver_glm(old_par, X, y, degree, pen, family, w)
-    (par) %>% plot()
+    # (par) %>% plot()
     idx <- old_par != 0
     rel_error <- max(abs(par - old_par)[idx] / abs(old_par)[idx])
     if (rel_error < 1e-5) break
@@ -395,6 +398,10 @@ aridge_solver_glm_slow <- function(X, y, pen, degree,
                                    diff = degree + 1,
                                    tol = 1e-6) {
   family <- match.arg(family)
+  # Compressed design matrix
+  comp <- block_design(X, degree)
+  B <- comp$B
+  alpha <- comp$alpha
   # Define sigma0
   sigma0sq <- var(lm(y ~ X - 1)$residuals)
   # Define returned variables
@@ -406,13 +413,14 @@ aridge_solver_glm_slow <- function(X, y, pen, degree,
   par <- rep(1, ncol(X))
   w <- rep(1, ncol(X) - degree - 1)
   ind_pen <- 1
+
   # Main loop
   for (iter in 1:maxiter) {
-    par <- wridge_solver_glm(X, y, degree, pen,
+    par <- wridge_solver_glm(X, y, B, alpha, degree, pen[ind_pen],
                              family = family,
                              old_par = par,
-                             w = rep(1, ncol(X) - degree - 1),
-                             maxiter = 1000)
+                             w = w,
+                             maxiter = 1000)$par
     w <- 1 / (diff(par, differences = diff) ^ 2 + epsilon ^ 2)
     sel <- w * diff(par, differences = diff) ^ 2
     if (verbose) {
