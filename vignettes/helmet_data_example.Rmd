@@ -1,0 +1,72 @@
+---
+title: "Illustration of Adaptive Spline"
+author: "Vivien Goepp"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Setup
+```{r, message = FALSE, error = FALSE}
+library(tidyverse)
+library(aspline)
+library(splines2)
+data(helmet)
+x <- helmet$x
+y <- helmet$y
+```
+
+## Fit Aspline
+```{r}
+k <- 40
+knots <- seq(min(x), max(x), length = k + 2)[-c(1, k + 2)]
+pen <- 10 ^ seq(-4, 4, 0.25)
+x_seq <- seq(min(x), max(x), length = 1000)
+aridge <- aridge_solver(x, y, knots, pen)
+a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
+X_seq <- bSpline(x_seq, knots = aridge$knots_sel[[which.min(aridge$ebic)]], intercept = TRUE)
+a_basis <- (X_seq %*% diag(coef(a_fit))) %>%
+  as.data.frame() %>%
+  mutate(x = x_seq) %>%
+  reshape2::melt(id.vars = "x", variable.name = "spline_n", value.name = "y") %>%
+  as_tibble() %>%
+  filter(y != 0)
+a_predict <- data_frame(x = x_seq, pred = predict(a_fit, data.frame(x = x_seq)))
+ggplot() +
+  geom_point(data = helmet, aes(x, y), shape = 1) +
+  geom_line(data = a_predict, aes(x, pred), size = 0.5) +
+  geom_line(data = a_basis, aes(x, y, group = spline_n), linetype = 1, size = 0.1) +
+  theme(legend.position = "none") +
+  ylab("") +
+  xlab("")
+```
+
+## Fit P-Splines
+```{r}
+p_fit <- mgcv::gam(y ~ s(x, bs = "ps", k = length(knots) + 3 + 1, m = c(3, 2)))
+X <- bSpline(x_seq, knots = knots, intercept = TRUE)
+p_basis <- (X %*% diag(coef(p_fit))) %>%
+  as.data.frame() %>%
+  mutate(x = x_seq) %>%
+  reshape2::melt(id.vars = "x", variable.name = "spline_n", value.name = "y") %>%
+  as_tibble() %>%
+  filter(y != 0)
+p_predict <- data_frame(x = x_seq, pred = predict(p_fit, data.frame(x = x_seq)))
+ggplot() +
+  geom_point(data = helmet, aes(x, y), shape = 1) +
+  geom_line(data = p_predict, aes(x, pred), size = 0.5) +
+  geom_line(data = p_basis, aes(x, y, group = spline_n), linetype = 1, size = 0.1) +
+  theme(legend.position = "none") +
+  ylab("") + xlab("")
+```
+
