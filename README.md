@@ -1,4 +1,4 @@
-# aspline
+# aspline: Fitting Adaptive Splines
 ## What are Adaptive Splines?
 
 This package implements [A-Spline](https://arxiv.org/abs/1808.01770) regression, an adaptive procedure for fitting splines with automatic selection of the knots.
