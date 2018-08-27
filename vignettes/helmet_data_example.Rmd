@@ -53,7 +53,7 @@ ggplot() +
 ```{r warning = FALSE, include = FALSE}
 pdf_width <- 8
 pdf_height <- 5
-ggsave("helmet_a_spline.pdf",
+ggsave("helmet_a_spline.png",
        height = pdf_height, width = pdf_width)
 ```
 
@@ -77,6 +77,6 @@ ggplot() +
   ylab("") + xlab("")
 ```
 ```{r warning = FALSE, include = FALSE}
-ggsave("helmet_p_spline.pdf",
+ggsave("helmet_p_spline.png",
        height = pdf_height, width = pdf_width)
 ```
