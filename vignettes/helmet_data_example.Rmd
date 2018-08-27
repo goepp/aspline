@@ -50,6 +50,13 @@ ggplot() +
   ylab("") +
   xlab("")
 ```
+```{r warning = FALSE, include = FALSE}
+pdf_width <- 8
+pdf_height <- 5
+ggsave("helmet_a_spline.pdf",
+       height = pdf_height, width = pdf_width)
+```
+
 
 ## Fit P-Splines
 ```{r}
@@ -69,4 +76,7 @@ ggplot() +
   theme(legend.position = "none") +
   ylab("") + xlab("")
 ```
-
+```{r warning = FALSE, include = FALSE}
+ggsave("helmet_p_spline.pdf",
+       height = pdf_height, width = pdf_width)
+```
