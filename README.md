@@ -66,5 +66,5 @@ ggplot() +
 
 The stricking difference between the two methods is that A-spline fits a far sparser model than P-Spline.
 
-[helmet_a_spline]: https://github.com/goepp/aspline/vignettes/helmet_a_spline.pdf
-[helmet_p_spline]: https://github.com/goepp/aspline/vignettes/helmet_p_spline.pdf
+[helmet_a_spline]: https://github.com/goepp/aspline/blob/master/vignettes/helmet_a_spline.pdf
+[helmet_p_spline]: https://github.com/goepp/aspline/blob/master/vignettes/helmet_p_spline.pdf
