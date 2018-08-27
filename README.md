@@ -1,5 +1,5 @@
 # aspline
-## The Adaptive Splines Regression
+## What are Adaptive Splines?
 
 This package implements [A-Spline](https://arxiv.org/abs/1808.01770) regression, an adaptive procedure for fitting splines with automatic selection of the knots.
 One-dimentional B-Splines of any non-negative degree  can be fitted.
@@ -10,5 +10,5 @@ Consequently, the fitted splines will have knots only where necessary.
 ## Illustration
 
 ```r
-
+2+2
 ```
