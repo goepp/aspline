@@ -14,7 +14,7 @@ Stransky, N., Vallot, C., Reyal, F., Bernard-Pierrot, I., de Medina, S. G. D., S
 R., de Rycke, Y., Elvin, P., Cassidy, A., Spraggon, C., Graham, A., Southgate, J.,
 Asselain, B., Allory, Y., Abbou, C. C., Albertson, D. G., Thiery, J. P., Chopin, D. K.,
 Pinkel, D. and Radvanyi, F. (2006). Regional Copy Number Independent Deregulation
-of Transcription in Cancer', \italic{Nature Genetics} 38(12), 1386-1396.
+of Transcription in Cancer', \emph{Nature Genetics} 38(12), 1386-1396.
 }
 \usage{
 bladder

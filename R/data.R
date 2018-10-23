@@ -33,8 +33,8 @@
 #'   \item{strontium}{Ratio of strontium isotopes}
 #'   ...
 #' }
-#' @source Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \italic{Geological Society of America Bulletin}, 109, 1421-1442.
-#' @references Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \italic{Semiparametric Regression}, Cambridge University Press.
+#' @source Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \emph{Geological Society of America Bulletin}, 109, 1421-1442.
+#' @references Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \emph{Semiparametric Regression}, Cambridge University Press.
 #' \url{http://stat.tamu.edu/~carroll/semiregbook/}
 "fossil"
 #' Bladder Cancer aCGH profile data
@@ -51,7 +51,7 @@
 #' R., de Rycke, Y., Elvin, P., Cassidy, A., Spraggon, C., Graham, A., Southgate, J.,
 #' Asselain, B., Allory, Y., Abbou, C. C., Albertson, D. G., Thiery, J. P., Chopin, D. K.,
 #' Pinkel, D. and Radvanyi, F. (2006). Regional Copy Number Independent Deregulation
-#' of Transcription in Cancer', \italic{Nature Genetics} 38(12), 1386-1396.
+#' of Transcription in Cancer', \emph{Nature Genetics} 38(12), 1386-1396.
 "bladder"
 #' Yearly number of coal mine disasters in Britain
 #'
@@ -64,7 +64,24 @@
 #'   \item{y}{number of coal mine disasters}
 #' }
 #' @source Diggle, P. and Marron, J. S. (1988). `Equivalence of Smoothing Parameter Selectors
-#' in Density and Intensity Estimation', \italic{Journal of the American Statistical Association} 83(403), 793-800.
-#' @reference Eilers, P. H. C. and Marx, B. D. (1996). `Flexible Smoothing with B-splines and Penalties', \italic{Statistical Science} 11(2), 89-102.
-
-
+#' in Density and Intensity Estimation', \emph{Journal of the American Statistical Association} 83(403), 793-800.
+#' @reference Eilers, P. H. C. and Marx, B. D. (1996). `Flexible Smoothing with B-splines and Penalties', \emph{Statistical Science} 11(2), 89-102.
+"coal"
+#' Titanium heat data
+#'
+#' A data set of 49 samples expressing the thermal property of titanium
+#'
+#' @format 49 observations and two variables:
+#' \describe{
+#' \item{x}{temperature}
+#' \item{y}{physical property}
+#' }
+#' @usage \code{data(titanium)}
+#' @source
+#' \itemize{
+#' \item de Boor, C., and Rice, J. R. (1986), Least-squares cubic spline approximation. II: variable knots. \emph{Report CSD TR 21, Purdue U., Lafayette, IN.}
+#' \item Dierckx, P. (1993), \emph{Curve and Surface Fitting with Splines}, Springer.
+#' \item Jupp, D. L. B. (1975), \emph{Approximation to data by splines with free knots}, SIAM Journal on Numerical Analysis, 15: 328-343.
+#' }
+#'
+"titanium"

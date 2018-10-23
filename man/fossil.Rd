@@ -11,7 +11,7 @@
   ...
 }}
 \source{
-Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \italic{Geological Society of America Bulletin}, 109, 1421-1442.
+Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \emph{Geological Society of America Bulletin}, 109, 1421-1442.
 }
 \usage{
 fossil
@@ -20,7 +20,7 @@ fossil
 A dataset with 106 observations on fossil shells from the \code{SemiPar} package (\url{https://CRAN.R-project.org/package=SemiPar}).
 }
 \references{
-Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \italic{Semiparametric Regression}, Cambridge University Press.
+Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \emph{Semiparametric Regression}, Cambridge University Press.
 \url{http://stat.tamu.edu/~carroll/semiregbook/}
 }
 \keyword{datasets}
