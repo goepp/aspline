@@ -42,6 +42,9 @@ compute_mse <- function(x, y, k, method) {
   } else if (method == "a_ebic") {
     a_spline <- aridge_solver(x, y, knots)
     sum(a_spline$fit$ebic$residuals ^ 2) / length(y)
+  } else if (method == "bars") {
+    bars <- barsN.fun(x, y, priorparam = c(1, 20))
+    sum((bars$postmodes - y) ^ 2 / length(y))
   } else {
     stop("Error: method argument not correct")
   }
@@ -61,9 +64,12 @@ fitted_wrapper <- function(x, y, k, method) {
   } else if (method == "a_bic") {
     a_spline <- aridge_solver(x, y, knots)
     a_spline$fit$bic$fitted.values
-  } else if (method == "a_bic") {
+  } else if (method == "a_ebic") {
     a_spline <- aridge_solver(x, y, knots)
     a_spline$fit$ebic$fitted.values
+  } else if (method == "bars") {
+    bars <- barsN.fun(x, y, priorparam = c(1, 20))
+    bars$postmodes
   } else {
     stop("Error: method argument not correct")
   }
@@ -101,6 +107,10 @@ l2_fit <- function(x, y, k, method, fun) {
     aridge <- aridge_solver(x, y, knots)
     fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
     error <- integrate(difference_a, 0, 1, fit = fit, fun = fun)$value
+  } else if (method == "bars") {
+    bars <- barsN.fun(x, y, priorparam = c(1, 20))
+    fit <- approxfun(x, bars$postmodes)
+    error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else {
     stop("Error: method argument not correct")
   }
@@ -165,7 +175,10 @@ nlevel_fit <- function(x, y, k, method, fun) {
     aridge <- aridge_solver(x, y, knots)
     # fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
     nlevel <- ncol(bs(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
-  } else {
+  } else if (method == "bars") {
+    bars <- barsN.fun(x, y, priorparam = c(1, 20))
+    nlevel <- mode(bars$no.knots)
+    } else {
     stop("Error: method argument not correct")
   }
   nlevel
