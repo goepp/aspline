@@ -45,6 +45,9 @@ compute_mse <- function(x, y, k, method) {
   } else if (method == "bars") {
     bars <- barsN.fun(x, y, priorparam = c(1, 20))
     sum((bars$postmodes - y) ^ 2 / length(y))
+  } else if (method == "fks") {
+    fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
+    sum((fitted.freekt(fks) - y) ^ 2 / length(y))
   } else {
     stop("Error: method argument not correct")
   }
@@ -70,6 +73,9 @@ fitted_wrapper <- function(x, y, k, method) {
   } else if (method == "bars") {
     bars <- barsN.fun(x, y, priorparam = c(1, 20))
     bars$postmodes
+  } else if (method == "fks") {
+    fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
+    as.vector(fitted.freekt(fks))
   } else {
     stop("Error: method argument not correct")
   }
@@ -110,6 +116,10 @@ l2_fit <- function(x, y, k, method, fun) {
   } else if (method == "bars") {
     bars <- barsN.fun(x, y, priorparam = c(1, 20))
     fit <- approxfun(x, bars$postmodes)
+    error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
+  } else if (method == "fks") {
+    fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
+    fit <- approxfun(x, fitted.freekt(fks))
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else {
     stop("Error: method argument not correct")
