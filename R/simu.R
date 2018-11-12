@@ -48,6 +48,9 @@ compute_mse <- function(x, y, k, method) {
   } else if (method == "fks") {
     fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
     sum((fitted.freekt(fks) - y) ^ 2 / length(y))
+  } else if (method == "freeps") {
+    freeps <- freepsgen(x, y, degree = 3, numknot = 5)
+    sum((fitted.freekt(freeps) - y) ^ 2 / length(y))
   } else {
     stop("Error: method argument not correct")
   }
@@ -76,6 +79,9 @@ fitted_wrapper <- function(x, y, k, method) {
   } else if (method == "fks") {
     fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
     as.vector(fitted.freekt(fks))
+  } else if (method == "freeps") {
+    freeps <- freepsgen(x, y, degree = 3, numknot = 5)
+    as.vector(fitted.freekt(freeps))
   } else {
     stop("Error: method argument not correct")
   }
@@ -120,6 +126,10 @@ l2_fit <- function(x, y, k, method, fun) {
   } else if (method == "fks") {
     fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
     fit <- approxfun(x, fitted.freekt(fks))
+    error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
+  } else if (method == "freeps") {
+    freeps <- freepsgen(x, y, degree = 3, numknot = 5)
+    fit <- approxfun(x, fitted.freekt(freeps))
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else {
     stop("Error: method argument not correct")
