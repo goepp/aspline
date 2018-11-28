@@ -1,6 +1,6 @@
 #
 # /**********************************************************************
-#		
+#
 #			Rwrapper for BARSN v. 1.0
 #
 #
@@ -9,7 +9,7 @@
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2, or (at your option) any
 # later version.
-#  
+#
 # These functions are distributed in the hope that they will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -43,7 +43,7 @@
 #		tau,c,fits,peak,conf)
 #
 # Prior to using this Rwrapper, one must have a shared object file called
-# barsN.so.  This can be created on linux by giving the command 
+# barsN.so.  This can be created on linux by giving the command
 #         R CMD SHLIB barsN.c
 # Make sure that you have barsN.out before executing this command.
 # You must make the shared library available with the
@@ -54,17 +54,17 @@
 # Please note that this program creates or overwrites several files,
 # entitled "bars_points", "bars_params", "samp_mu", "samp_params",
 # "summ_mu", "summ_mugrid", "summ_params", "prior_knots", and
-# "samp_knots".  Care should be made to avoid accidentally deleting files. 
-# 
+# "samp_knots".  Care should be made to avoid accidentally deleting files.
+#
 #
 # This R wrapper for the BARS code has the following input:
 #
-# Required: 
+# Required:
 #
-#  x  
+#  x
 #     a vector of the independent variable, in increasing order
 #
-#  y   
+#  y
 #     a vector of the dependent variable
 #
 #
@@ -84,7 +84,7 @@
 #
 #  priorparam
 #     the parameter for the prior
-#     a) if using Poisson, the choice for lambda = mean 
+#     a) if using Poisson, the choice for lambda = mean
 #     b) if using Uniform, a vector of length 2 which includes the
 #	minimum number of knots followed by the maximum number of
 #	knots  (default = c(1,60))
@@ -92,7 +92,7 @@
 #	first column should be the number of knots and the second column
 #	should be the probability of obtaining this number of knots.
 #	Note the following example:
-#     
+#
 #		2 0.05
 #		3 0.15
 #		4 0.30
@@ -101,20 +101,20 @@
 #		7 0.10
 #
 # MCMC settings (optional):
-# 
+#
 #  burnin
-#     the desired length of the burn-in for the MCMC chain 
+#     the desired length of the burn-in for the MCMC chain
 #	 (default = 200)
 #
 #  sims
-#     the number of simulations desired for the MCMC chain 
+#     the number of simulations desired for the MCMC chain
 #	 (default = 2000)
 #
-#  tau 
+#  tau
 #     parameter that controls the spread for the knot proposal
-#       distribution (default = 50.0) 
-# 
-#  c 
+#       distribution (default = 50.0)
+#
+#  c
 #     parameter that controls the probability of birth and death
 #       candidates (default = 0.4)
 #
@@ -126,7 +126,7 @@
 #       data point for each run of the simulation (default = T)  Please
 #       note that if the number of data points and/or simulations is
 #       large, there may be a lengthy delay as the necessary data is
-#       read.  
+#       read.
 #
 #  peak
 #     if "T", the program will return the location and height of the
@@ -151,7 +151,7 @@
 # variable, such as:
 #
 # out <- barsN.fun(x,y,.....)
-# 
+#
 #
 # The Rwrapper performs the operation by reading the data into the
 # file "bars_points", reading the settings into the file "bars_params" and
@@ -159,17 +159,17 @@
 # returned in the output:
 #
 #
-# postmeans 
+# postmeans
 #    vector of the posterior means evaluated at the x values
 #
-# postmodes 
+# postmodes
 #    vector of the posterior modes evaluated at the x values
 #
-# sims 
+# sims
 #    vector of each trial number, beginning at burnin + 1 and
 #       ending at burnin + sims
 #
-# no.knots 
+# no.knots
 #    vector of the number of knots used at each trial (does not include
 #       burnin iterations)
 #
@@ -181,11 +181,11 @@
 #       fill in the matrix at iteration numbers that have less than the
 #       maximum number of knots.
 #
-# sampBICs 
+# sampBICs
 #    vector of the calculated BIC at each trial (does not include burnin
-#       iterations) 
+#       iterations)
 #
-# sampllikes 
+# sampllikes
 #    vector of the calculated loglikelihood at each trial (does not
 #       include burnin iterations)
 #
@@ -201,11 +201,11 @@
 #
 # Optional output if peak = "T":
 #
-# samplpeaks 
+# samplpeaks
 #    vector of the x location of the highest point in the fitted
 #       curve for each trial (does not include burnin iterations)
 #
-# samphpeaks 
+# samphpeaks
 #    vector of the y value (height) of the highest point in the
 #       fitted curve for each trial (does not include burnin iterations)
 #
@@ -213,168 +213,161 @@
 #    a credible interval for the x location of the highest peak; width
 #       of the interval is dependent upon the setting chosen for conf
 #
-# peaklocationmean 
+# peaklocationmean
 #    the mean x location for the highest peak
 #
-# peaklocationmode 
+# peaklocationmode
 #    the mode x location for the highest peak
 #
-# peakheightquantile 
+# peakheightquantile
 #    a credible interval for the y value (height) of the highest peak;
 #       width of the interval is dependent upon the setting chosen for
 #       conf
 #
-# peakheightmean 
+# peakheightmean
 #    the mean y value (height) of the highest peak
 #
-# peakheightmode 
+# peakheightmode
 #    the mode y value (height) of the highest peak
 #
-#  
+#
 # ****************************************************************************/
 
-barsN.fun<-function(x,y,iknots=25,prior="uniform",
-priorparam=c(1,60),burnin=200,sims=2000,tau=50.0,c=0.4,fits=T,
-peak=F,conf=0.95,bins=150){
-x<-as.double(x)
-y<-as.double(y)
-n<-length(x)
-n<-as.integer(n)
-if(length(y)!=n){
-print("x and y are not the same length")
-break}
-
-burnin<-as.integer(burnin)
-sims<-as.integer(sims)
-iknots<-as.integer(iknots)
-prior<-as.character(prior)
-tau<-as.double(tau)
-c<-as.double(c)
-if(c>0.5 || c<=0){
-print("Value of c must be greater than 0 and no greater than 0.5")
-break}
-bins<-as.integer(bins)
-
-.C("filed",x,y,n)
-.C("priorsetup",burnin,sims,iknots,tau,c,conf,bins)
-z<-0
-if(prior=="Poisson" || prior=="Pois" || prior=="poisson" || prior=="pois"){
-priorparam<-as.double(priorparam)
-.C("paramp",priorparam)
-z<-1}
-
-if(prior=="Uniform" || prior=="Unif" || prior=="uniform" || prior=="unif"){
-if(length(priorparam)!=2){
-print("Uniform prior requires a vector of length 2 - a minimum number")
-print("of knots and a maximum number of knots")
-break}
-upper<-priorparam[2]
-lower<-priorparam[1]
-if(lower>upper){
-print("Lower bound is greater than upper bound for number of knots")
-break}
-if(lower<1){
-print("Lower bound is less than 1 and has been reset to 1 knot.")
-lower<-1}
-upper<-as.integer(upper)
-lower<-as.integer(lower)
-.C("paramu",upper,lower)
-z<-1}
-
-if(prior=="User"||
-prior=="user"||prior=="defined"||prior=="other"||prior=="Other"){
-if(ncol(priorparam)!=2){
-print("For user defined prior, priorparam must be of the form")
-print("of an nx2 matrix, with the number of knots in the first")
-print("column and the probability of obtaining that number of knots")
-print("in the second column.")
-break}
-pknots<-as.integer(priorparam[,1])
-probknots<-as.double(priorparam[,2])
-knotlength<-as.integer(length(pknots))
-.C("filed2",pknots,probknots,knotlength)
-.C("paramuser")
-z<-2}
-
-if(z==0){
-print("Prior must be Poisson, uniform, or user-defined.")
-break}
-
-
-if(z==1){
-system("./barsN.out bars_points bars_params")
-}
-
-if(z==2){
-system("./barsN.out bars_points bars_params prior_file")
-}
-
-v<-scan("samp_params")
-if(length(v)==0){
-	print("Program failed to generate correct knots.")
-	print("Problem is likely due to poor constraints on prior.")
-	print("Try again with smaller lower bound on prior.")
-break}
-
-sumfits<-as.matrix(read.table("summ_mu"))
-sampmeans<-as.matrix(read.table("samp_params"))
-summar<-as.matrix(read.table("summ_params"))
-lengths<-count.fields("samp_knots")
-knots1<-scan("samp_knots")
-knots<-matrix(NA,ncol=max(lengths),nrow=length(lengths))
-index<-c(0,cumsum(lengths))
-for(i in 1:length(lengths)){
-knots[i,1:lengths[i]]<-knots1[ (index[i]+1):index[(i+1)] ]
-}
-
-
-if(fits==T){
-	sampfit<-as.matrix(read.table("samp_mu"))
-	sampfit<-sampfit+(min(y)-0.1)
-if(peak==T){
-	summar<-as.matrix(read.table("summ_params"))
-g<-list(sampfits=sampfit,postmeans=(sumfits[2,]),
-	postmodes=(sumfits[3,]),
-	sims=sampmeans[,1],no.knots=sampmeans[,6],sampknots=knots,
-	sampBICs=sampmeans[,2],
-	sampllikes=sampmeans[,3],samplpeaks=sampmeans[,4],
-	samphpeaks=(sampmeans[,5]),
-	peaklocationquantile=summar[1,1:2],
-	peaklocationmean=summar[1,3],peaklocationmode=summar[1,4],
-	peakheightquantile=(summar[2,1:2]),
-	peakheightmean=(summar[2,3]),
-	peakheightmode=(summar[2,4]))}
-if(peak==F){
-g<-list(sampfits=sampfit,postmeans=(sumfits[2,]),
-	postmodes=(sumfits[3,]),
-	sims=sampmeans[,1],no.knots=sampmeans[,6],sampknots=knots,
-	sampBICs=sampmeans[,2],
-	sampllikes=sampmeans[,3])
-}
-}
-
-if(fits==F){
-if(peak==T){
-summar<-as.matrix(read.table("summ_params"))
-g<-list(postmeans=(sumfits[2,]),
-	postmodes=(sumfits[3,]),
-	sims=sampmeans[,1],no.knots=sampmeans[,6],sampknots=knots,
-	sampBICs=sampmeans[,2],
-	sampllikes=sampmeans[,3],samplpeaks=sampmeans[,4],
-	samphpeaks=(sampmeans[,5]),
-	peaklocationquantile=summar[1,1:2],
-	peaklocationmean=summar[1,3],peaklocationmode=summar[1,4],
-	peakheightquantile=(summar[2,1:2]),
-	peakheightmean=(summar[2,3]),
-	peakheightmode=(summar[2,4]))}
-if(peak==F){
-g<-list(postmeans=(sumfits[2,]),
-	postmodes=(sumfits[3,]),
-	sims=sampmeans[,1],no.knots=sampmeans[,6],sampknots=knots,
-	sampBICs=sampmeans[,2],
-	sampllikes=sampmeans[,3])
-}
-}
-return(g)
+barsN.fun <- function(x, y, iknots = 25, prior = "uniform",
+                      priorparam = c(1, 60), burnin = 200, sims = 2000,
+                      tau = 50, c = 0.4, fits = T, peak = F, conf = 0.95,
+                      bins = 150) {
+    x <- as.double(x)
+    y <- as.double(y)
+    n <- length(x)
+    n <- as.integer(n)
+    if (length(y) != n) {
+        print("x and y are not the same length")
+        break
+    }
+    burnin <- as.integer(burnin)
+    sims <- as.integer(sims)
+    iknots <- as.integer(iknots)
+    prior <- as.character(prior)
+    tau <- as.double(tau)
+    c <- as.double(c)
+    if (c > 0.5 || c <= 0) {
+        print("Value of c must be greater than 0 and no greater than 0.5")
+        break
+    }
+    bins <- as.integer(bins)
+    .C("filed", x, y, n)
+    .C("priorsetup", burnin, sims, iknots, tau, c, conf, bins)
+    z <- 0
+    if (prior == "Poisson" || prior == "Pois" || prior == "poisson" || prior == "pois") {
+        priorparam <- as.double(priorparam)
+        .C("paramp", priorparam)
+        z <- 1
+    }
+    if (prior == "Uniform" || prior == "Unif" || prior == "uniform" || prior == "unif") {
+        if (length(priorparam) != 2) {
+            print("Uniform prior requires a vector of length 2 - a minimum number")
+            print("of knots and a maximum number of knots")
+            break
+        }
+        upper <- priorparam[2]
+        lower <- priorparam[1]
+        if (lower > upper) {
+            print("Lower bound is greater than upper bound for number of knots")
+            break
+        }
+        if (lower < 1) {
+            print("Lower bound is less than 1 and has been reset to 1 knot.")
+            lower <- 1
+        }
+        upper <- as.integer(upper)
+        lower <- as.integer(lower)
+        .C("paramu", upper, lower)
+        z <- 1
+    }
+    if (prior == "User" || prior == "user" || prior == "defined" || prior == "other" || prior == "Other") {
+        if (ncol(priorparam) != 2) {
+            print("For user defined prior, priorparam must be of the form")
+            print("of an nx2 matrix, with the number of knots in the first")
+            print("column and the probability of obtaining that number of knots")
+            print("in the second column.")
+            break
+        }
+        pknots <- as.integer(priorparam[, 1])
+        probknots <- as.double(priorparam[, 2])
+        knotlength <- as.integer(length(pknots))
+        .C("filed2", pknots, probknots, knotlength)
+        .C("paramuser")
+        z <- 2
+    }
+    if (z == 0) {
+        print("Prior must be Poisson, uniform, or user-defined.")
+        break
+    }
+    if (z == 1) {
+        system("./barsN.out bars_points bars_params")
+    }
+    if (z == 2) {
+        system("./barsN.out bars_points bars_params prior_file")
+    }
+    v <- scan("samp_params")
+    if (length(v) == 0) {
+        print("Program failed to generate correct knots.")
+        print("Problem is likely due to poor constraints on prior.")
+        print("Try again with smaller lower bound on prior.")
+        break
+    }
+    sumfits <- as.matrix(read.table("summ_mu"))
+    sampmeans <- as.matrix(read.table("samp_params"))
+    summar <- as.matrix(read.table("summ_params"))
+    lengths <- count.fields("samp_knots")
+    knots1 <- scan("samp_knots")
+    knots <- matrix(NA, ncol = max(lengths), nrow = length(lengths))
+    index <- c(0, cumsum(lengths))
+    for (i in 1:length(lengths)) {
+        knots[i, 1:lengths[i]] <- knots1[(index[i] + 1):index[(i + 1)]]
+    }
+    if (fits == T) {
+        sampfit <- as.matrix(read.table("samp_mu"))
+        sampfit <- sampfit + (min(y) - 0.1)
+        if (peak == T) {
+            summar <- as.matrix(read.table("summ_params"))
+            g <- list(sampfits = sampfit, postmeans = (sumfits[2, ]),
+                      postmodes = (sumfits[3, ]), sims = sampmeans[, 1],
+                      no.knots = sampmeans[, 6], sampknots = knots,
+                      sampBICs = sampmeans[, 2], sampllikes = sampmeans[, 3],
+                      samplpeaks = sampmeans[, 4], samphpeaks = (sampmeans[, 5]),
+                      peaklocationquantile = summar[1, 1:2],
+                      peaklocationmean = summar[1, 3], peaklocationmode = summar[1, 4],
+                      peakheightquantile = (summar[2, 1:2]),
+                      peakheightmean = (summar[2, 3]), peakheightmode = (summar[2, 4]))
+        }
+        if (peak == F) {
+            g <- list(sampfits = sampfit, postmeans = (sumfits[2, ]),
+                      postmodes = (sumfits[3, ]), sims = sampmeans[, 1],
+                      no.knots = sampmeans[, 6], sampknots = knots,
+                      sampBICs = sampmeans[, 2], sampllikes = sampmeans[, 3])
+        }
+    }
+    if (fits == F) {
+        if (peak == T) {
+            summar <- as.matrix(read.table("summ_params"))
+            g <- list(postmeans = (sumfits[2, ]), postmodes = (sumfits[3, ]),
+                      sims = sampmeans[, 1], no.knots = sampmeans[, 6],
+                      sampknots = knots, sampBICs = sampmeans[, 2],
+                      sampllikes = sampmeans[, 3], samplpeaks = sampmeans[, 4],
+                      samphpeaks = (sampmeans[, 5]), peaklocationquantile = summar[1, 1:2],
+                      peaklocationmean = summar[1, 3], peaklocationmode = summar[1, 4],
+                      peakheightquantile = (summar[2, 1:2]),
+                      peakheightmean = (summar[2, 3]), peakheightmode = (summar[2, 4]))
+        }
+        if (peak == F) {
+            g <- list(postmeans = (sumfits[2, ]), postmodes = (sumfits[3, ]),
+                      sims = sampmeans[, 1], no.knots = sampmeans[, 6],
+                      sampknots = knots, sampBICs = sampmeans[, 2],
+                      sampllikes = sampmeans[, 3])
+        }
+    }
+    return(g)
 }
 
