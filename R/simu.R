@@ -74,13 +74,15 @@ fitted_wrapper <- function(x, y, k, method) {
     a_spline <- aridge_solver(x, y, knots)
     a_spline$fit$ebic$fitted.values
   } else if (method == "bars") {
+    dyn.load("barsN.so", now = F)
+    source("barsN_Rwrapper")
     bars <- barsN.fun(x, y, priorparam = c(1, 20))
     bars$postmodes
   } else if (method == "fks") {
-    fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
+    fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3, search = "genetic")
     as.vector(fitted.freekt(fks))
   } else if (method == "freeps") {
-    freeps <- freepsgen(x, y, degree = 3, numknot = 5)
+    freeps <- freeknotsplines::freepsgen(x, y, degree = 3, numknot = 5)
     as.vector(fitted.freekt(freeps))
   } else {
     stop("Error: method argument not correct")
@@ -120,15 +122,17 @@ l2_fit <- function(x, y, k, method, fun) {
     fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
     error <- integrate(difference_a, 0, 1, fit = fit, fun = fun)$value
   } else if (method == "bars") {
+    dyn.load("barsN.so", now = F)
+    source("barsN_Rwrapper")
     bars <- barsN.fun(x, y, priorparam = c(1, 20))
     fit <- approxfun(x, bars$postmodes)
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else if (method == "fks") {
-    fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
+    fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3, search = "genetic")
     fit <- approxfun(x, fitted.freekt(fks))
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else if (method == "freeps") {
-    freeps <- freepsgen(x, y, degree = 3, numknot = 5)
+    freeps <- freeknotsplines::freepsgen(x, y, degree = 3, numknot = 5)
     fit <- approxfun(x, fitted.freekt(freeps))
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else {
