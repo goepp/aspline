@@ -198,7 +198,7 @@ nknot_fit <- function(x, y, k, method, degree) {
     aridge <- aridge_solver(x, y, knots = knots, degree = degree)
     nknot <- length(aridge$knots_sel[[which.min(aridge$ebic)]])
   } else if (method == "bars") {
-    if (degre !=) warning("BARS is only available with degree = 3")
+    if (degre != 3) warning("BARS is only available with degree = 3")
     bars <- barsN.fun(x, y, priorparam = c(1, length(knots)))
     ux <- unique(bars$no.knots)
     nknot <- ux[which.max(tabulate(match(bars$no.knots, ux)))]
