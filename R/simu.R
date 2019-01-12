@@ -124,11 +124,12 @@ l2_fit <- function(x, y, k, method, fun) {
   } else if (method == "bars") {
     dyn.load("barsN.so", now = F)
     source("barsN_Rwrapper")
-    bars <- barsN.fun(x, y, priorparam = c(1, 20))
+    bars <- barsN.fun(x, y, priorparam = c(1, length(knots)))
     fit <- approxfun(x, bars$postmodes)
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else if (method == "fks") {
-    fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3, search = "genetic")
+    fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3, search = "genetic",
+                                                maxknot = length(knots))
     fit <- approxfun(x, fitted.freekt(fks))
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else if (method == "freeps") {
@@ -181,29 +182,32 @@ boldify <- function(mat, ind_row = 1:ncol(mat)) {
     "rownames<-"(rep("", nrow(mat)))
 }
 #' @export
-nlevel_fit <- function(x, y, k, method, fun) {
+nknot_fit <- function(x, y, k, method, degree) {
   knots <- seq(0, 1, length = k + 2)[-c(1, k + 2)]
   if (method == "s") {
-    nlevel <- NA
+    nknot <- NA
   } else if (method == "p") {
-    nlevel <- NA
+    nknot <- NA
   } else if (method %in% c("a", "a_aic")) {
-    aridge <- aridge_solver(x, y, knots)
-    # fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$aic)]]))
-    nlevel <- ncol(bs(x, knots = aridge$knots_sel[[which.min(aridge$aic)]]))
+    aridge <- aridge_solver(x, y, knots = knots, degree = degree)
+    nknot <- length(aridge$knots_sel[[which.min(aridge$aic)]])
   } else if (method == "a_bic") {
-    aridge <- aridge_solver(x, y, knots)
-    # fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$bic)]]))
-    nlevel <- ncol(bs(x, knots = aridge$knots_sel[[which.min(aridge$bic)]]))
+    aridge <- aridge_solver(x, y, knots = knots, degree = degree)
+    nknot <- length(aridge$knots_sel[[which.min(aridge$bic)]])
   } else if (method == "a_ebic") {
-    aridge <- aridge_solver(x, y, knots)
-    # fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
-    nlevel <- ncol(bs(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
+    aridge <- aridge_solver(x, y, knots = knots, degree = degree)
+    nknot <- length(aridge$knots_sel[[which.min(aridge$ebic)]])
   } else if (method == "bars") {
-    bars <- barsN.fun(x, y, priorparam = c(1, 20))
-    nlevel <- mode(bars$no.knots)
-    } else {
+    if (degre !=) warning("BARS is only available with degree = 3")
+    bars <- barsN.fun(x, y, priorparam = c(1, length(knots)))
+    ux <- unique(bars$no.knots)
+    nknot <- ux[which.max(tabulate(match(bars$no.knots, ux)))]
+  } else if (method == "fks") {
+    fks <- freeknotsplines::fit.search.numknots(x, y, degree = degree, search = "genetic",
+                                                maxknot = length(knots))
+    nknot <- length(fks@optknot)
+  } else {
     stop("Error: method argument not correct")
   }
-  nlevel
+  return(nknot)
 }
