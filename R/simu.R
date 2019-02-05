@@ -75,7 +75,6 @@ fitted_wrapper <- function(x, y, k, method) {
     a_spline$fit$ebic$fitted.values
   } else if (method == "bars") {
     dyn.load("barsN.so", now = F)
-    source("barsN_Rwrapper")
     bars <- barsN.fun(x, y, priorparam = c(1, 20))
     bars$postmodes
   } else if (method == "fks") {
