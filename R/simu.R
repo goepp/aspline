@@ -123,7 +123,6 @@ l2_fit <- function(x, y, k, method, fun) {
     error <- integrate(difference_a, 0, 1, fit = fit, fun = fun)$value
   } else if (method == "bars") {
     dyn.load("barsN.so", now = F)
-    source("barsN_Rwrapper")
     bars <- barsN.fun(x, y, priorparam = c(1, length(knots)))
     fit <- approxfun(x, bars$postmodes)
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
