@@ -74,11 +74,12 @@ fitted_wrapper <- function(x, y, k, method) {
     a_spline <- aridge_solver(x, y, knots)
     a_spline$fit$ebic$fitted.values
   } else if (method == "bars") {
-    dyn.load("barsN.so", now = F)
-    bars <- barsN.fun(x, y, priorparam = c(1, 20))
+    # dyn.load("barsN.so", now = F)
+    bars <- barsN.fun(x, y, priorparam = c(1, k))
     bars$postmodes
   } else if (method == "fks") {
-    fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3, search = "genetic")
+    fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3,
+                                                maxknot = k, search = "genetic")
     as.vector(fitted.freekt(fks))
   } else if (method == "freeps") {
     freeps <- freeknotsplines::freepsgen(x, y, degree = 3, numknot = 5)
@@ -201,11 +202,26 @@ nknot_fit <- function(x, y, k, method, degree) {
     ux <- unique(bars$no.knots)
     nknot <- ux[which.max(tabulate(match(bars$no.knots, ux)))]
   } else if (method == "fks") {
-    fks <- freeknotsplines::fit.search.numknots(x, y, degree = degree, search = "genetic",
-                                                maxknot = length(knots))
+    fks <- freeknotsplines::fit.search.numknots(x, y, degree = degree, search = "genetic")
     nknot <- length(fks@optknot)
   } else {
     stop("Error: method argument not correct")
   }
   return(nknot)
+}
+#' @export
+gen_data <- function(ind, design) {
+  sample <- data_frame(
+    x = seq(0, 1, length = design$sample_size[ind]),
+    y = pryr::fget(design$fun[ind])(x) + rnorm(length(x), 0, sd = design$sigma[ind])
+  ) %>%
+    mutate(sample_size = design$sample_size[ind]) %>%
+    mutate(sigma = design$sigma[ind]) %>%
+    mutate(ind_rep = design$ind_rep[ind]) %>%
+    mutate(k = design$k[ind]) %>%
+    mutate(fun = design$fun[ind]) %>%
+    mutate(method = design$method[ind]) %>%
+    mutate(degree = design$degree[1]) %>%
+    mutate(ind_wrapper = ind)
+  sample
 }
