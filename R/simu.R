@@ -202,7 +202,8 @@ nknot_fit <- function(x, y, k, method, degree) {
     ux <- unique(bars$no.knots)
     nknot <- ux[which.max(tabulate(match(bars$no.knots, ux)))]
   } else if (method == "fks") {
-    fks <- freeknotsplines::fit.search.numknots(x, y, degree = degree, search = "genetic")
+    fks <- freeknotsplines::fit.search.numknots(x, y, degree = degree,
+                                                search = "genetic")
     nknot <- length(fks@optknot)
   } else {
     stop("Error: method argument not correct")
