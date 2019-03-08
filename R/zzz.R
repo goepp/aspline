@@ -1,4 +1,8 @@
 .onLoad <- function(libname, pkgname){
-  # dyn.load("barsN.so", now = F)
-  # source("barsN_Rwrapper")
+  library.dynam("barsN", package = pkgname, "aspline/R")
+  source("barsN_Rwrapper")
 }
+# .onUnLoad <- function(libname, pkgname){
+#   library.dynam.unload("barsN", package = c(pkgname), )
+#   source("barsN_Rwrapper")
+# }
