@@ -232,7 +232,7 @@
 #
 #
 # ****************************************************************************/
-dyn.load("src/barsN.so")
+# dyn.load("src/barsN.so")
 #' @export
 barsN.fun<-function(x,y,iknots=25,prior="uniform",
 priorparam=c(1,60),burnin=200,sims=2000,tau=50.0,c=0.4,fits=T,
