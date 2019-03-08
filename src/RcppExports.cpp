@@ -31,9 +31,22 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport void filed(void *, void *, void *);
+RcppExport void filed2(void *, void *, void *);
+RcppExport void paramp(void *);
+RcppExport void paramu(void *, void *);
+RcppExport void paramuser();
+RcppExport void priorsetup(void *, void *, void *, void *, void *, void *, void *);
+
 static const R_CallMethodDef CallEntries[] = {
     {"_aspline_band_weight", (DL_FUNC) &_aspline_band_weight, 2},
     {"_aspline_weight_design_band", (DL_FUNC) &_aspline_weight_design_band, 3},
+    {"filed",      (DL_FUNC) &filed,      3},
+    {"filed2",     (DL_FUNC) &filed2,     3},
+    {"paramp",     (DL_FUNC) &paramp,     1},
+    {"paramu",     (DL_FUNC) &paramu,     2},
+    {"paramuser",  (DL_FUNC) &paramuser,  0},
+    {"priorsetup", (DL_FUNC) &priorsetup, 7},
     {NULL, NULL, 0}
 };
 
