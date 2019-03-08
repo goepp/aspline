@@ -89,6 +89,7 @@
 barsN.fun <- function(x, y, iknots = 25, prior = "uniform", priorparam = c(1, 60),
     burnin = 200, sims = 2000, tau = 50, c = 0.4, fits = T, peak = F, conf = 0.95,
     bins = 150) {
+    dyn.load("src/barsN.so")
     x <- as.double(x)
     y <- as.double(y)
     n <- length(x)
