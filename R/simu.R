@@ -211,19 +211,19 @@ nknot_fit <- function(x, y, k, method, degree) {
   return(nknot)
 }
 #' @export
-#' gen_data_hetero <- function(ind, design) {
-sample <- data_frame(
-  x = seq(0, 1, length = design$sample_size[ind]),
-  y = pryr::fget(design$fun[ind])(x) + rnorm(length(x), 0, sd = hetero_1(x, design$sigma[ind]))
-) %>%
-  mutate(sample_size = design$sample_size[ind]) %>%
-  mutate(sigma = design$sigma[ind]) %>%
-  mutate(ind_rep = design$ind_rep[ind]) %>%
-  mutate(k = design$k[ind]) %>%
-  mutate(fun = design$fun[ind]) %>%
-  mutate(method = design$method[ind]) %>%
-  mutate(ind_wrapper = ind)
-sample
+gen_data_hetero <- function(ind, design) {
+  sample <- data_frame(
+    x = seq(0, 1, length = design$sample_size[ind]),
+    y = pryr::fget(design$fun[ind])(x) + rnorm(length(x), 0, sd = hetero_1(x, design$sigma[ind]))
+  ) %>%
+    mutate(sample_size = design$sample_size[ind]) %>%
+    mutate(sigma = design$sigma[ind]) %>%
+    mutate(ind_rep = design$ind_rep[ind]) %>%
+    mutate(k = design$k[ind]) %>%
+    mutate(fun = design$fun[ind]) %>%
+    mutate(method = design$method[ind]) %>%
+    mutate(ind_wrapper = ind)
+  return(sample)
 }
 #' @export
 gen_data <- function(ind, design) {
