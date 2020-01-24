@@ -7,9 +7,38 @@ This method uses a penalization approach to compensate overfitting.
 The penalty is proportional to the number of knots used to support the regression spline.
 Consequently, the fitted splines will have knots only where necessary and the fitted model is sparser than comparable penalized spline regressions (for instance, P-splines).
 
-## Illustration
+## Installation
+You can install the `aspline`package directly from GitHub, which is the recommended option. Alternatively, you can also install this package by hand. Details are given hereafter.
 
-Below is an illustration of the A-spline procedure using the data [helmet](https://github.com/goepp/aspline/blob/master/data/helmet.rda).
+### Recommended installation
+1. Execute in `R`:
+
+```
+install.packages("devtools")   
+devtools::install_github("goepp/aspline")
+```
+
+2. If `R` asks you which package you would like to update, there should be no need to update them: answer "None". The dependency on the latest  be removed soon.
+
+### Manual installation
+1. Click "Clone or Download" > "Download ZIP" to download the file "aspline-master.zip"
+2. Unzip the zip file and rename the output folder "aspline-master" to "aspline"
+3. Open a terminal in the folder where "aspline" is, and execute:
+
+```
+R CMD build aspline  
+```
+
+This builds your package, which is now present in the same folder, under the name "aspline_0.1.0.tar.gz" (version number may be different).
+4. Install the package in `R`:
+```
+setwd("path/to/the/aspline/package")   
+install.packages("aspline_0.1.0.tar.gz", repos = NULL)
+```
+Your package should now be installed!
+## Illustration of `aspline`
+
+Below is an illustration of the A-spline procedure using the data [helmet](https://github.com/goepp/aspline/blob/master/data/helmet.rda = 250x).
 The thick line represents the fitted spline. 
 The thin line represents the B-spline basis decomposition of the fitted curve.
 ```r
@@ -68,3 +97,9 @@ The stricking difference between the two methods is that A-spline fits a far spa
 
 [helmet_a_spline]: https://github.com/goepp/aspline/blob/master/vignettes/helmet_a_spline.png
 [helmet_p_spline]: https://github.com/goepp/aspline/blob/master/vignettes/helmet_p_spline.png
+
+## Contact
+A problem or suggestion? Feel free to make a push request or to email me (see my contact details on [my webpage](https://goepp.github.io))
+
+## License
+This package is released under the GPLv3 License: see the file `LICENSE` or the [online text](https://www.gnu.org/licenses/gpl-3.0.en.html). Basically, you can
