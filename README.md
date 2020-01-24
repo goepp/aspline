@@ -29,7 +29,8 @@ devtools::install_github("goepp/aspline")
 R CMD build aspline  
 ```
 
-This builds your package, which is now present in the same folder, under the name "aspline_0.1.0.tar.gz" (version number may be different).
+This builds the package, which is now present in the same folder, under the name "aspline_0.1.0.tar.gz" (version number may be different).
+
 4. Install the package in `R`:
 ```
 setwd("path/to/the/aspline/package")   
@@ -38,7 +39,7 @@ install.packages("aspline_0.1.0.tar.gz", repos = NULL)
 Your package should now be installed!
 ## Illustration of `aspline`
 
-Below is an illustration of the A-spline procedure using the data [helmet](https://github.com/goepp/aspline/blob/master/data/helmet.rda = 250x).
+Below is an illustration of the A-spline procedure using the data [helmet](https://github.com/goepp/aspline/blob/master/data/helmet.rda).
 The thick line represents the fitted spline. 
 The thin line represents the B-spline basis decomposition of the fitted curve.
 ```r
@@ -70,7 +71,7 @@ ggplot() +
   ylab("") +
   xlab("")
 ```
-![alt text][helmet_p_spline]
+![alt text][helmet_p_spline = 50x]
 
 For the sake of comparision, we display here the estimated P-spline with the same data.
 The thin line also represent the B-spline basis decomposition.
@@ -91,7 +92,7 @@ ggplot() +
   theme(legend.position = "none") +
   ylab("") + xlab("")
 ```
-![alt text][helmet_a_spline]
+![alt text][helmet_a_spline = 250x]
 
 The stricking difference between the two methods is that A-spline fits a far sparser model than P-Spline.
 
