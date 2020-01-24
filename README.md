@@ -71,7 +71,7 @@ ggplot() +
   ylab("") +
   xlab("")
 ```
-![alt text|20%][helmet_p_spline]
+![][helmet_p_spline] <!-- .element height="50%" width="50%" -->
 
 For the sake of comparision, we display here the estimated P-spline with the same data.
 The thin line also represent the B-spline basis decomposition.
@@ -92,7 +92,7 @@ ggplot() +
   theme(legend.position = "none") +
   ylab("") + xlab("")
 ```
-![alt text][helmet_a_spline]
+![][helmet_a_spline] <!-- .element height="50%" width="50%" -->
 
 The stricking difference between the two methods is that A-spline fits a far sparser model than P-Spline.
 
