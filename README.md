@@ -97,7 +97,7 @@ ggplot() +
 The stricking difference between the two methods is that A-spline fits a far sparser model than P-Spline.
 
 ## Contact
-A problem or suggestion? Feel free to make a push request or to email me (see my contact details on [my webpage](https://goepp.github.io))
+A problem or suggestion? Feel free to make a pull request or to email me (see my contact details on [my webpage](https://goepp.github.io))
 
 ## License
 This package is released under the GPLv3 License: see the `LICENSE` file or the [online text](https://www.gnu.org/licenses/gpl-3.0.en.html). In [short](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)#summary), you can use, modify, and distribute (including for commerical use) this package, with the notable obligations to use the GPLv3 license for your work and to provide a copy of the present source code.
