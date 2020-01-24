@@ -71,10 +71,7 @@ ggplot() +
   xlab("")
 ``` 
 
-![][helmet_p_spline]
-<img src="https://github.com/goepp/aspline/blob/master/vignettes/helmet_p_spline.png" width="150">
-
-[helmet_p_spline]: https://github.com/goepp/aspline/blob/master/vignettes/helmet_p_spline.png
+<img src="https://github.com/goepp/aspline/blob/master/vignettes/helmet_p_spline.png" width="450">
 
 For the sake of comparision, we display here the estimated P-spline with the same data.
 The thin line also represent the B-spline basis decomposition.
@@ -95,11 +92,9 @@ ggplot() +
   theme(legend.position = "none") +
   ylab("") + xlab("")
 ```
-![][helmet_a_spline]
+<img src="https://github.com/goepp/aspline/blob/master/vignettes/helmet_a_spline.png" width="450">
 
 The stricking difference between the two methods is that A-spline fits a far sparser model than P-Spline.
-
-[helmet_a_spline]: https://github.com/goepp/aspline/blob/master/vignettes/helmet_a_spline.png
 
 ## Contact
 A problem or suggestion? Feel free to make a push request or to email me (see my contact details on [my webpage](https://goepp.github.io))
