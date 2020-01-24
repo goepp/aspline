@@ -18,7 +18,7 @@ install.packages("devtools")
 devtools::install_github("goepp/aspline")
 ```
 
-2. If `R` asks you which package you would like to update, there should be no need to update them: answer "None". The dependency on the latest  be removed soon.
+2. If `R` asks you which package you would like to update, there should be no need to update them: answer "None". If this breaks the package or prevents it from running, please [contact me](https://github.com/goepp/aspline#contact).
 
 ### Manual installation
 1. Click "Clone or Download" > "Download ZIP" to download the file "aspline-master.zip"
@@ -71,7 +71,7 @@ ggplot() +
   ylab("") +
   xlab("")
 ```
-![alt text][helmet_p_spline = 50x]
+![alt text|20%][helmet_p_spline]
 
 For the sake of comparision, we display here the estimated P-spline with the same data.
 The thin line also represent the B-spline basis decomposition.
@@ -92,7 +92,7 @@ ggplot() +
   theme(legend.position = "none") +
   ylab("") + xlab("")
 ```
-![alt text][helmet_a_spline = 250x]
+![alt text][helmet_a_spline]
 
 The stricking difference between the two methods is that A-spline fits a far sparser model than P-Spline.
 
