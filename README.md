@@ -11,10 +11,14 @@ Consequently, the fitted splines will have knots only where necessary and the fi
 You can install the `aspline`package directly from GitHub, which is the recommended option. Alternatively, you can also install this package by hand. Details are given hereafter.
 
 ### Recommended installation
+You have to download the package `bandsolve` (on which `aspline` depends) from Github since it is not available on the CRAN. 
+The first installation method is simpler and recommended.
+
 1. Execute in `R`:
 
 ```
-install.packages("devtools")   
+install.packages("devtools")
+devtools::install_github("monneret/bandsolve")
 devtools::install_github("goepp/aspline")
 ```
 
@@ -31,12 +35,15 @@ R CMD build aspline
 
 This builds the package, which is now present in the same folder, under the name "aspline_0.1.0.tar.gz" (version number may be different).
 
-4. Install the package in `R`:
+4. Install the packages in `R`:
 ```
-setwd("path/to/the/aspline/package")   
+setwd("path/to/the/aspline/package")
 install.packages("aspline_0.1.0.tar.gz", repos = NULL)
 ```
+5. If you get an error message saying that the package `bandsolve` cannot be downloaded, you need to go through steps 1 to 4 for the package [bandsolve](https://github.com/monneret/bandsolve).
+
 Your package should now be installed!
+
 ## Illustration of `aspline`
 
 Below is an illustration of the A-spline procedure using the  [helmet](https://github.com/goepp/aspline/blob/master/data/helmet.rda) data.
