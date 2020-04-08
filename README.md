@@ -42,7 +42,7 @@ install.packages("aspline_0.1.0.tar.gz", repos = NULL)
 ```
 5. If you get an error message saying that the package `bandsolve` cannot be downloaded, you need to go through steps 1 to 4 for the package [bandsolve](https://github.com/monneret/bandsolve).
 
-Your package should now be installed!
+Your package should now be installed! 
 
 ## Illustration of `aspline`
 
