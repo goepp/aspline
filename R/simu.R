@@ -11,6 +11,14 @@ bump <- function(x) {
   (x + 2 * exp(-(16 * (x - 0.5)) ^ 2)) / 2.5
 }
 #' @export
+doppler <- function(x) {
+  ifelse(x > 0, sin(4 / x ^ 0.7) + 1.5, 0.5)
+}
+#' @export
+wave <- function(x) {
+  (sin(4 * pi * x ^ 4) * (1 - x) + 0.22) / 0.55
+}
+#' @export
 spa_het <- function(x) {
   sqrt(x * (1 - x)) * sin((2 * pi * (1 + 2 ^ (-3 / 5))) / (x + 2 ^ (-3 / 5))) + 0.5
 }
@@ -100,6 +108,15 @@ difference_p <- function(x, fit, fun) {
 difference_a <- function(x, fit, fun) {
   (as.vector(predict(fit, data_frame(x = x))) - pryr::fget(fun)(x)) ^ 2
 }
+difference_a_new <- function(x, param, knots, fun) {
+  B <- fda::bsplineS(x = x, breaks = knots, norder = 3 + 1, returnMatrix = TRUE)
+  (as.vector(B %*% param - pryr::fget(fun)(x))) ^ 2
+}
+#' @export
+error_wrapper <- function(ind, design, data) {
+  sample <- data %>% filter(ind_wrapper == ind)
+  l2_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1])
+}
 #' @export
 l2_fit <- function(x, y, k, method, fun) {
   knots <- seq(0, 1, length = k + 2)[-c(1, k + 2)]
@@ -109,6 +126,12 @@ l2_fit <- function(x, y, k, method, fun) {
   } else if (method == "p") {
     fit <- mgcv::gam(y ~ s(x, bs = "ps", k = length(knots) + 3 + 1, m = c(3, 2)))
     error <- integrate(difference_p, 0, 1, fit = fit, fun = fun)$value
+  } else if (method == "a_new") {
+    temp <- aspline(x, y, degree = 3, n_knots = k)
+    param <- temp$result[which.min(temp$cv), ]
+    knots <- seq(min(x) - diff(range(x)) / (k - 6),
+                 max(x) + diff(range(x))  / (k - 6), length.out = k)
+    error <- integrate(difference_a_new, 0, 1, param = param, knots = knots, fun = fun)$value
   } else if (method %in% c("a", "a_aic")) {
     aridge <- aridge_solver(x, y, knots)
     fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$aic)]]))
@@ -141,6 +164,12 @@ l2_fit <- function(x, y, k, method, fun) {
   error
 }
 #' @export
+nlevel_wrapper <- function(ind, design, data) {
+  sample <- data %>% filter(ind_wrapper == ind)
+  c(ind_wrapper = ind,
+    nlevel = nlevel_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1]))
+}
+#' @export
 predict_wrapper <- function(x, y, k, x_seq, method) {
   knots <- seq(0, 1, length = k + 2)[-c(1, k + 2)]
   if (method == "s") {
@@ -149,6 +178,13 @@ predict_wrapper <- function(x, y, k, x_seq, method) {
   } else if (method == "p") {
     fit <- mgcv::gam(y ~ s(x, bs = "ps", k = length(knots) + 3 + 1, m = c(3, 2)))
     as.vector(predict(fit, data_frame(x = x_seq)))
+  } else if (method == "a_new") {
+    temp <- aspline(x, y, degree = 3, n_knots = k)
+    param <- temp$result[which.min(temp$cv), ]
+    knots <- seq(min(x) - diff(range(x)) / (k - 6),
+                 max(x) + diff(range(x))  / (k - 6), length.out = k)
+    B <- fda::bsplineS(x = x_seq, breaks = knots, norder = 3 + 1, returnMatrix = TRUE)
+    as.vector(B %*% param)
   } else if (method %in% c("a", "a_aic")) {
     aridge <- aridge_solver(x, y, knots)
     fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$aic)]]))
