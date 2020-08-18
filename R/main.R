@@ -586,4 +586,79 @@ aridge_solver_old <- function(X, y, pen, degree,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
        "dim" = dim, "loglik" = loglik)
 }
+#'
+#' Fit A-splines
+#'
+#' @param x Numerical vector, data x values. Must be sorted in increasing order.
+#' @param y Numerical vector, data y values.
+#' @param degree An integer greater or equal to zero. The degree of the spline (degree = order + 1).
+#' @param n_knots Maximum number of knots to consider.
+#' @export
+aspline <- function(x, y, degree, n_knots = 50) {
+  # Define variables
+  # We have just one extra knot on each side, which is necessary.
+  knots <- seq(min(x) - diff(range(x)) / (n_knots - 6),
+               max(x) + diff(range(x))  / (n_knots - 6), length.out = n_knots)
+  # inner_knots <- knots[min(x) <= knots & knots <= max(x)]
+  B <- fda::bsplineS(x = x, breaks = knots, norder = degree + 1, nderiv = 0, returnMatrix = TRUE)
+  lambda <- 10 ^ seq(-2, 4, length = 100)
+  result <- matrix(NA, length(lambda), ncol(B))
+  cov_mat <- matrix(NA, length(lambda), nrow(B))
+  model_dim <- rep(NA, length(lambda))
+  nll <- rep(NA, length(lambda))
+  cv <- rep(NA, length(lambda))
+  epsilon <- 1e-5 # Note: the explosion in condition number comes from starting with a too low epsilon
+  tol <- 1e-6
+  itermax <- 50000
+  g <- identity; ginv <- identity
+  D <- diff(diag(ncol(B)), differences = degree + 1) %>% as("dgCMatrix")
+  if (degree > 0) {
+    for (ind in seq(degree, 1)) {
+      D <- rbind(diff(diag(ncol(B)), differences = ind)[1, ],
+                 D,
+                 diff(diag(ncol(B)), differences = ind)[ncol(B) - ind, ])
+    }
+  }
+
+  # Init
+  v <- rep(1, nrow(D))
+  z <- y; w <- rep(1, nrow(B)) # GLM variance weights
+  a <- rep(NA, ncol(B)); sel <- rep(1, nrow(D))
+  ind <- 1
+  iter <- 1
+
+  # Adaptive ridge loop
+  weighted_matrix_init <- as(lambda[ind] * Matrix::crossprod(D, D * v) + Matrix::crossprod(B, B * w), "symmetricMatrix")
+  chol_init <- Matrix::Cholesky(weighted_matrix_init)
+  while (iter < itermax) {
+    sel_old <- sel
+    weighted_matrix <- as(lambda[ind] * Matrix::crossprod(D, D * v) + Matrix::crossprod(B, B * w), "symmetricMatrix")
+    chol <- Matrix::update(chol_init, weighted_matrix)
+    a[] <- Matrix::solve(chol, Matrix::crossprod(B, w * z))
+    v[] <- 1 / ((D %*% a) ^ 2 + epsilon)
+    z <- B %*% a + (y - ginv(B %*% a)) / w
+    # w <- variance of my estimates in the GLM case
+    sel[] <- v * (D %*% a) ^ 2
+    converge <- all(abs((sel - sel_old)[sel < Inf]) < tol); converge
+    if (converge) {
+      result[ind, ] <- a[]
+      nll[ind] <- sum((y - B %*% a) ^ 2)
+      model_dim[ind] <- sum(diag(Matrix::solve(chol, Matrix::crossprod(B, B * w))))
+      cv[ind] <- norm(as.vector(y - B %*% a) / (1 - diag(B %*% Matrix::solve(chol, t(B * w)))), "2")
+      # this takes longer to compute than gcv, because we cannot reuse the same hat matrix
+      cov_mat[ind, ] <- diag(crossprod(B %*% solve(weighted_matrix, t(B * w))))
+      ind <- ind + 1
+    }
+    iter <- iter + 1
+    if (ind > length(lambda)) break
+  }
+
+  # Compute criteria
+  gcv <- nll / (nrow(B) - model_dim) ^ 2
+  aic <- 2 * nll / 1 ^ 2 + 2 * model_dim #- 2 * ncol(B) * log(sigma0) - ncol(B) * log(2 * pi)
+  bic <- 2 * nll / 1 ^ 2 + log(ncol(B)) * model_dim
+  sigma0 <- sqrt(1 / (nrow(B) - model_dim) * nll)
+  return(list(result = result, nll = nll, model_dim = model_dim, cov_mat = cov_mat, gcv = gcv,
+              cv = cv, aic = aic, bic = bic, sigma0 = sigma0))
+}
 
