@@ -4,11 +4,13 @@
 \name{coal}
 \alias{coal}
 \title{Yearly number of coal mine disasters in Britain}
-\format{A data frame with 112 observations and 2 variables:
+\format{
+A data frame with 112 observations and 2 variables:
 \describe{
   \item{x}{year}
   \item{y}{number of coal mine disasters}
-}}
+}
+}
 \source{
 Diggle, P. and Marron, J. S. (1988). `Equivalence of Smoothing Parameter Selectors
 in Density and Intensity Estimation', \emph{Journal of the American Statistical Association} 83(403), 793-800.

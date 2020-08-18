@@ -26,6 +26,7 @@ hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
   if (ncol(XX_band) != diff + 1) stop("Error: XX_band must have diff + 1 columns")
   bandsolve::bandsolve(XX_band + pen * band_weight(w, diff), Xy) - par
 }
+
 #' Fit B-Splines with weighted penalization over differences of parameters
 #'
 #' @param XX_band The matrix \eqn{X^T X} where \code{X} is the design matrix. This argument is given
@@ -184,7 +185,7 @@ aridge_solver <- function(x, y,
        "dim" = dim, "loglik" = loglik, "crit_plot" = crit_plot)
 }
 #' @export
-aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2)[-c(1, 2 * length(x) + 2)],
+aspline_old <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2)[-c(1, 2 * length(x) + 2)],
                     pen = 10 ^ seq(-3, 6, length = 100),
                     degree = 3,
                     maxiter = 10000,
@@ -242,7 +243,7 @@ aspline <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2
       idx <- c(sel > 0.99, rep(TRUE, diff))
       par_ls[[ind_pen]][idx] <- model[[ind_pen]]$coefficients
       par_ls[[ind_pen]][!idx] <- 0
-      loglik[ind_pen] <- log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
+      loglik[ind_pen] <- log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq)) # TODO: there should not be a log here
       dim[ind_pen] <- length(knots_sel[[ind_pen]]) + degree + 1
       bic[ind_pen] <- log(ncol(XX_band)) * (length(knots_sel[[ind_pen]]) + degree + 1) +
         2 * log(sum((model[[ind_pen]]$residuals) ^ 2 / sigma0sq))
@@ -585,3 +586,4 @@ aridge_solver_old <- function(X, y, pen, degree,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
        "dim" = dim, "loglik" = loglik)
 }
+

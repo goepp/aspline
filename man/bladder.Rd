@@ -4,11 +4,13 @@
 \name{bladder}
 \alias{bladder}
 \title{Bladder Cancer aCGH profile data}
-\format{A data frame with 500 observations and 2 variables:
+\format{
+A data frame with 500 observations and 2 variables:
 \describe{
   \item{x}{probe number}
   \item{y}{aCGH profile value}
-}}
+}
+}
 \source{
 Stransky, N., Vallot, C., Reyal, F., Bernard-Pierrot, I., de Medina, S. G. D., Segraves,
 R., de Rycke, Y., Elvin, P., Cassidy, A., Spraggon, C., Graham, A., Southgate, J.,

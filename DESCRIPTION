@@ -22,7 +22,7 @@ Imports:
     splines2,
     Rcpp,
     bandsolve
-RoxygenNote: 6.1.0
+RoxygenNote: 7.1.1
 LinkingTo: Rcpp
 Suggests: testthat,
     knitr,

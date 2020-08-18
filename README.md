@@ -12,7 +12,6 @@ You can install the `aspline`package directly from GitHub, which is the recommen
 
 ### Recommended installation
 You have to download the package `bandsolve` (on which `aspline` depends) from Github since it is not available on the CRAN. 
-The first installation method is simpler and recommended.
 
 1. Execute in `R`:
 
