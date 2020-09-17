@@ -56,11 +56,12 @@ x <- helmet$x
 y <- helmet$y
 k <- 40
 knots <- seq(min(x), max(x), length = k + 2)[-c(1, k + 2)]
+degree <- 3
 pen <- 10 ^ seq(-4, 4, 0.25)
 x_seq <- seq(min(x), max(x), length = 1000)
-aridge <- aridge_solver(x, y, knots, pen)
-a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
-X_seq <- bSpline(x_seq, knots = aridge$knots_sel[[which.min(aridge$ebic)]], intercept = TRUE)
+aridge <- aridge_solver(x, y, knots, pen, degree = degree)
+a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]], degree = degree))
+X_seq <- bSpline(x_seq, knots = aridge$knots_sel[[which.min(aridge$ebic)]], intercept = TRUE, degree = degree)
 a_basis <- (X_seq %*% diag(coef(a_fit))) %>%
   as.data.frame() %>%
   mutate(x = x_seq) %>%
