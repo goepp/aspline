@@ -12,7 +12,7 @@
 }
 \usage{
 \code{data(nmr)}
-\code{plot(nmr, type = "l)}
+\code{plot(nmr, type = "l")}
 }
 \description{
 A signal of nuclear magnetic resonance.
