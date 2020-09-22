@@ -7,6 +7,10 @@ This method uses a penalization approach to compensate overfitting.
 The penalty is proportional to the number of knots used to support the regression spline.
 Consequently, the fitted splines will have knots only where necessary and the fitted model is sparser than comparable penalized spline regressions (for instance, P-splines).
 
+**Important note:** this implementation of A-spline performs worse than Eiler's [P-splines](https://projecteuclid.org/download/pdf_1/euclid.ss/1038425655). This is, I believe, due to the fact that this implementation uses the adaptive ridge penalty without shrinkage, before fitting unpenalized B-splines (see [the preprint](https://arxiv.org/abs/1808.01770) for details).
+An improved -- and simplified -- version of A-splines is under development.
+This version should be faster to computer, and give better estimation results. The current implementation is the function `aspline` in branch `shrinkage`.
+
 ## Installation
 You can install the `aspline`package directly from GitHub, which is the recommended option. Alternatively, you can also install this package by hand. Details are given hereafter.
 
