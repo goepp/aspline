@@ -2,9 +2,4 @@
 ^\.Rproj\.user$
 ^data-raw$
 ^\.sandbox$
-<<<<<<< HEAD
 ^\supplementary.zip
-||||||| merged common ancestors
-=======
-^supplementary.zip$
->>>>>>> e7ce3c861400f22f2c9d3bd3f9c35026fd02b4cc
