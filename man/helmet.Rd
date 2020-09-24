@@ -4,14 +4,12 @@
 \name{helmet}
 \alias{helmet}
 \title{Testing Crash Helmets}
-\format{
-A data frame with 132 rows and 2 variables:
+\format{A data frame with 132 rows and 2 variables:
 \describe{
   \item{x}{Time after impact, in milliseconds}
   \item{y}{Head acceleration, in units of \eqn{g}}
   ...
-}
-}
+}}
 \source{
 Dataset number \eqn{338} of \emph{Hand, D. et al. (1993) A Handbook of Small Datasets}.
 }

@@ -8,11 +8,10 @@
 \source{
 \itemize{
 \item Data from \url{https://web.stanford.edu/~hastie/ElemStatLearn/datasets/nmr1.csv}.
-\item See also The Elements of Statisical Learning (2001, 2nd Ed.), \emph{Hastie, T., Friedman, J., and Tibshirani, R.J}, p. 176}
+\item See also The Elements of Statisical Learning (2001, 2nd Ed.), \emph{Hastie, T., Friedman, J., and Tibshirani, R.J}, p. 176}.
 }
 \usage{
-\code{data(nmr)}
-\code{plot(nmr, type = "l")}
+nmr
 }
 \description{
 A signal of nuclear magnetic resonance.

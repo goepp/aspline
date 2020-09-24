@@ -4,13 +4,11 @@
 \name{coal}
 \alias{coal}
 \title{Yearly number of coal mine disasters in Britain}
-\format{
-A data frame with 112 observations and 2 variables:
+\format{A data frame with 112 observations and 2 variables:
 \describe{
-  \item{x}{year}
-  \item{y}{number of coal mine disasters}
-}
-}
+  \item{year}{year}
+  \item{n}{number of coal mine disasters}
+}}
 \source{
 Diggle, P. and Marron, J. S. (1988). `Equivalence of Smoothing Parameter Selectors
 in Density and Intensity Estimation', \emph{Journal of the American Statistical Association} 83(403), 793-800.
@@ -21,5 +19,8 @@ coal
 \description{
 A data of 112 observations registering the yearly number of coal mine disasters in Britain from 1851 to 1962.
 The data comes from \cite{Diggle et al. (1988)} and has been used for spline regression by \cite{Eilers et al. (1996)}.
+}
+\references{
+Eilers, P. H. C. and Marx, B. D. (1996). `Flexible Smoothing with B-splines and Penalties', \emph{Statistical Science} 11(2), 89-102.
 }
 \keyword{datasets}

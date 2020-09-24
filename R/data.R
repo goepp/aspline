@@ -30,7 +30,7 @@
 #' @format A data frame with 106 observations and 2 variables:
 #' \describe{
 #'   \item{age}{The age of fossils, in millions of years}
-#'   \item{strontium}{Ratio of strontium isotopes}
+#'   \item{strontium.ratio}{Ratio of strontium isotopes}
 #'   ...
 #' }
 #' @source Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \emph{Geological Society of America Bulletin}, 109, 1421-1442.
@@ -60,12 +60,12 @@
 #'
 #' @format A data frame with 112 observations and 2 variables:
 #' \describe{
-#'   \item{x}{year}
-#'   \item{y}{number of coal mine disasters}
+#'   \item{year}{year}
+#'   \item{n}{number of coal mine disasters}
 #' }
 #' @source Diggle, P. and Marron, J. S. (1988). `Equivalence of Smoothing Parameter Selectors
 #' in Density and Intensity Estimation', \emph{Journal of the American Statistical Association} 83(403), 793-800.
-#' @reference Eilers, P. H. C. and Marx, B. D. (1996). `Flexible Smoothing with B-splines and Penalties', \emph{Statistical Science} 11(2), 89-102.
+#' @references Eilers, P. H. C. and Marx, B. D. (1996). `Flexible Smoothing with B-splines and Penalties', \emph{Statistical Science} 11(2), 89-102.
 "coal"
 #' Titanium heat data
 #'
@@ -76,7 +76,6 @@
 #' \item{x}{temperature}
 #' \item{y}{physical property}
 #' }
-#' @usage \code{data(titanium)}
 #' @source
 #' \itemize{
 #' \item de Boor, C., and Rice, J. R. (1986), Least-squares cubic spline approximation. II: variable knots. \emph{Report CSD TR 21, Purdue U., Lafayette, IN.}
@@ -85,3 +84,14 @@
 #' }
 #'
 "titanium"
+#' Nuclear Magnetic Resonance data
+#'
+#' A signal of nuclear magnetic resonance.
+#'
+#' @format Data farme of 1024 rows and two columns: the index \code{x} and the signal \code{y}.
+#' @source
+#' \itemize{
+#' \item Data from \url{https://web.stanford.edu/~hastie/ElemStatLearn/datasets/nmr1.csv}.
+#' \item See also The Elements of Statisical Learning (2001, 2nd Ed.), \emph{Hastie, T., Friedman, J., and Tibshirani, R.J}, p. 176}.
+#'
+"nmr"

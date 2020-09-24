@@ -4,14 +4,12 @@
 \name{montreal}
 \alias{montreal}
 \title{Montreal Temperature Data}
-\format{
-A data frame with 730 rows and 2 variables:
+\format{A data frame with 730 rows and 2 variables:
 \describe{
   \item{day}{The day of the year from January 1, 1961, to December 31, 1962}
   \item{temp}{Temperature in Celsius}
   ...
-}
-}
+}}
 \source{
 \url{http://people.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2/TrinityWorkshop/Workshop-material-Simon/Intro_to_splines/Exercises/}
 }
