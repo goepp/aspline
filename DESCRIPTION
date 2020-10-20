@@ -19,9 +19,11 @@ Imports:
     magrittr,
     ggplot2,
     dplyr,
+    tidyr,
     splines2,
     Rcpp,
-    Matrix
+    Matrix,
+    mgcv
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp
 Suggests: testthat,
