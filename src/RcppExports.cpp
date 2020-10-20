@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// LDL
+List LDL(NumericMatrix D);
+RcppExport SEXP _aspline_LDL(SEXP DSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type D(DSEXP);
+    rcpp_result_gen = Rcpp::wrap(LDL(D));
+    return rcpp_result_gen;
+END_RCPP
+}
 // band_weight
 NumericMatrix band_weight(NumericVector w, int diff);
 RcppExport SEXP _aspline_band_weight(SEXP wSEXP, SEXP diffSEXP) {
@@ -14,6 +25,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
     Rcpp::traits::input_parameter< int >::type diff(diffSEXP);
     rcpp_result_gen = Rcpp::wrap(band_weight(w, diff));
+    return rcpp_result_gen;
+END_RCPP
+}
+// bandsolve_cpp
+List bandsolve_cpp(NumericMatrix D, NumericMatrix B);
+RcppExport SEXP _aspline_bandsolve_cpp(SEXP DSEXP, SEXP BSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type D(DSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(bandsolve_cpp(D, B));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -32,7 +55,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_aspline_LDL", (DL_FUNC) &_aspline_LDL, 1},
     {"_aspline_band_weight", (DL_FUNC) &_aspline_band_weight, 2},
+    {"_aspline_bandsolve_cpp", (DL_FUNC) &_aspline_bandsolve_cpp, 2},
     {"_aspline_weight_design_band", (DL_FUNC) &_aspline_weight_design_band, 3},
     {NULL, NULL, 0}
 };
