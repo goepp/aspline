@@ -42,4 +42,7 @@ export(wridge_solver_glm)
 import(Rcpp)
 importFrom(Rcpp,sourceCpp)
 importFrom(magrittr,"%>%")
+importFrom("graphics", "abline", "lines", "plot")
+    importFrom("stats", "approxfun", "filter", "integrate", "knots", "lm",
+               "predict", "rnorm", "var")
 useDynLib(aspline)
