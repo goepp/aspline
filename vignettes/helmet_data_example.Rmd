@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
 ## Setup
 ```{r, message = FALSE, error = FALSE}
 library(aspline)
+library(ggplot2)
+library(dplyr)
 library(splines2)
 data(helmet)
 x <- helmet$x
@@ -36,7 +38,7 @@ a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
 X_seq <- bSpline(x_seq, knots = aridge$knots_sel[[which.min(aridge$ebic)]], intercept = TRUE)
 a_basis <- (X_seq %*% diag(coef(a_fit))) %>%
   as.data.frame() %>%
-  mutate(x = x_seq) %>%
+  dplyr::mutate(x = x_seq) %>%
   reshape2::melt(id.vars = "x", variable.name = "spline_n", value.name = "y") %>%
   dplyr::as_tibble() %>%
   dplyr::filter(y != 0)
