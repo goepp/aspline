@@ -23,19 +23,6 @@
 #' D0 = rep(1.25, n)
 #' D1 = rep(-0.5, n-1)
 #' b = rnorm(n)
-#'
-#' ## Comparison with solve
-#'
-#' if(require(microbenchmark)){
-#' A = diag(D0);
-#' A[-n,-1] = A[-n,-1] + diag(D1);
-#' A[-1,-n] = A[-1,-n] + diag(D1);
-#' R = mat2rot(list(D0, D1))
-#' r = microbenchmark(
-#' SOLVE = solve(A,b),
-#' BANDSOLVE = bandsolve(R, b = b, inplace = TRUE), times = 100)
-#'boxplot(r)
-#'}
 
 bandsolve <- function(A, b = NULL, inplace = FALSE) {
     if ((nrow(A) == ncol(A)) & (A[nrow(A), ncol(A)] != 0))
@@ -145,31 +132,31 @@ rot2mat <- function(R) {
 #' rot2mat(mat2rot(A))
 
 mat2rot <- function(M) {
-    if (is.matrix(M)) {
-        N = ncol(M)
-        l = 0
-        for (i in 1:N) {
-            lprime = which(M[i, ] != 0)
-            if (lprime[length(lprime)] - i > l)
-                l = lprime[length(lprime)] - i
-        }
-        R = matrix(0, N, l + 1)
-        R[, 1] = diag(M)
-        if (l > 0) {
-            for (j in 1:l) {
-                if (j == N - 1) {
-                  R[, 1 + j] = c(M[-c(N:(N - j + 1)), -c(1:j)], rep(0, j))
-                } else {
-                  R[, 1 + j] = c(diag(M[-c(N:(N - j + 1)), -c(1:j)]), rep(0, j))
-                }
-            }
-        }
-        return(R)
-    } else if (is.list(M)) {
-        R = matrix(0, length(M[[1]]), length(M))
-        for (i in 1:length(M)) {
-            R[, i] = c(M[[i]], rep(0, i - 1))
-        }
-        return(R)
+  if (is.matrix(M)) {
+    N = ncol(M)
+    l = 0
+    for (i in 1:N) {
+      lprime = which(M[i, ] != 0)
+      if (lprime[length(lprime)] - i > l)
+        l = lprime[length(lprime)] - i
     }
+    R = matrix(0, N, l + 1)
+    R[, 1] = diag(M)
+    if (l > 0) {
+      for (j in 1:l) {
+        if (j == N - 1) {
+          R[, 1 + j] = c(M[-c(N:(N - j + 1)), -c(1:j)], rep(0, j))
+        } else {
+          R[, 1 + j] = c(diag(M[-c(N:(N - j + 1)), -c(1:j)]), rep(0, j))
+        }
+      }
+    }
+    return(R)
+  } else if (is.list(M)) {
+    R = matrix(0, length(M[[1]]), length(M))
+    for (i in 1:length(M)) {
+      R[, i] = c(M[[i]], rep(0, i - 1))
+    }
+    return(R)
+  }
 }

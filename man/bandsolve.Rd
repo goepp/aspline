@@ -34,17 +34,4 @@ n = 1000
 D0 = rep(1.25, n)
 D1 = rep(-0.5, n-1)
 b = rnorm(n)
-
-## Comparison with solve
-
-if(require(microbenchmark)){
-A = diag(D0);
-A[-n,-1] = A[-n,-1] + diag(D1);
-A[-1,-n] = A[-1,-n] + diag(D1);
-R = mat2rot(list(D0, D1))
-r = microbenchmark(
-SOLVE = solve(A,b),
-BANDSOLVE = bandsolve(R, b = b, inplace = TRUE), times = 100)
-boxplot(r)
-}
 }

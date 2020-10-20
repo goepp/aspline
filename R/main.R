@@ -70,6 +70,12 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' @param diff Order of the differences on the parameters. The value \code{degree + 1} is necessary to perform
 #' selection of the knots.
 #' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
+#' @importFrom graphics abline
+#' @importFrom graphics lines
+#' @importFrom graphics plot
+#' @importFrom stats var
+#' @importFrom stats lm
+#' @importFrom stats predict
 #' @export
 aridge_solver <- function(x, y,
                           knots = seq(min(x), max(x), length = 42)[-c(1, 42)],

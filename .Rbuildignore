@@ -2,6 +2,7 @@
 ^\.Rproj\.user$
 ^data-raw$
 ^sandbox$
-^supplementary.zip
+^supplementary.zip$
 ^doc$
 ^Meta$
+^.travis.yml$
