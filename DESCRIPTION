@@ -21,7 +21,6 @@ Imports:
     dplyr,
     splines2,
     Rcpp,
-    bandsolve,
     Matrix
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp

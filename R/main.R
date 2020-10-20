@@ -24,7 +24,7 @@ NULL
 #' @export
 hessian_solver <- function(par, XX_band, Xy, pen, w, diff) {
   if (ncol(XX_band) != diff + 1) stop("Error: XX_band must have diff + 1 columns")
-  bandsolve::bandsolve(XX_band + pen * band_weight(w, diff), Xy) - par
+  bandsolve(XX_band + pen * band_weight(w, diff), Xy) - par
 }
 
 #' Fit B-Splines with weighted penalization over differences of parameters
@@ -81,7 +81,7 @@ aridge_solver <- function(x, y,
                           tol = 1e-6) {
   X <- splines2::bSpline(x, knots = knots, intercept = TRUE, degree = degree)
   XX <- crossprod(X)
-  XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
+  XX_band <- cbind(mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
   Xy <- crossprod(X, y)
   # Define sigma0
   sigma0sq <- var(lm(y ~ X - 1)$residuals)
@@ -195,7 +195,7 @@ aspline_old <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x)
   X <- splines2::bSpline(x, knots = knots, degree = degree, intercept = TRUE)
   XX <- crossprod(X)
   XX_band <- cbind(
-    bandsolve::mat2rot(XX + diag(rep(1e-20), length(knots) + degree + 1)),
+    mat2rot(XX + diag(rep(1e-20), length(knots) + degree + 1)),
     0)
   Xy <- crossprod(X, y)
   # Define sigma0
@@ -368,7 +368,7 @@ hessian_solver_glm_band <- function(par, X, y, B, alpha, pen, w, degree,
   mat <- XWX_band + pen * band_weight(w, degree + 1)
   # vect <- sweep(t(X), MARGIN = 2, glm_weight, `*`) %*% y
   vect <- crossprod(X, sweep(X, 1, glm_weight, `*`) %*% par + y - g_inv(X %*% par))
-  as.vector(bandsolve::bandsolve(mat, vect))
+  as.vector(bandsolve(mat, vect))
 }
 #' @export
 wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
@@ -499,7 +499,7 @@ aridge_solver_old <- function(X, y, pen, degree,
                           diff = degree + 1,
                           tol = 1e-6) {
   XX <- crossprod(X)
-  XX_band <- cbind(bandsolve::mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
+  XX_band <- cbind(mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
   Xy <- crossprod(X, y)
   # Define sigma0
   sigma0sq <- var(lm(y ~ X - 1)$residuals)
