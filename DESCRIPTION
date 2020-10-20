@@ -19,10 +19,12 @@ Imports:
     magrittr,
     ggplot2,
     dplyr,
+    tidyr,
     splines2,
     Rcpp,
-    bandsolve,
-    Matrix
+    Matrix,
+    mgcv,
+    reshape2
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp
 Suggests: testthat,

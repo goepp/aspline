@@ -118,6 +118,9 @@ error_wrapper <- function(ind, design, data) {
   l2_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1])
 }
 #' @export
+#' @importFrom stats integrate
+#' @importFrom stats rnorm
+#' @importFrom stats approxfun
 l2_fit <- function(x, y, k, method, fun) {
   knots <- seq(0, 1, length = k + 2)[-c(1, k + 2)]
   if (method == "s") {
@@ -165,7 +168,7 @@ l2_fit <- function(x, y, k, method, fun) {
 }
 #' @export
 nlevel_wrapper <- function(ind, design, data) {
-  sample <- data %>% filter(ind_wrapper == ind)
+  sample <- data %>% dplyr::filter(ind_wrapper == ind)
   c(ind_wrapper = ind,
     nlevel = nlevel_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1]))
 }
