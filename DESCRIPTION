@@ -24,7 +24,7 @@ Imports:
     Rcpp,
     Matrix,
     mgcv,
-    reshape
+    reshape2
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp
 Suggests: testthat,
