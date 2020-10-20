@@ -67,7 +67,6 @@ p_basis <- (X %*% diag(coef(p_fit))) %>%
   as.data.frame() %>%
   dplyr::mutate(x = x_seq) %>%
   tidyr::pivot_longer(cols = paste0("V", 1:9), names_to = "spline_n", values_to = "y") %>%
-  dplyr::as_tibble() %>%
   dplyr::filter(y != 0)
 p_predict <- data_frame(x = x_seq, pred = predict(p_fit, data.frame(x = x_seq)))
 ggplot2::ggplot() +
