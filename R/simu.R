@@ -1,36 +1,27 @@
-#' @export
 hetero_1 <- function(x, alpha_var = 1) {
   (x * 0.3 + sqrt(alpha_var) * 0.2) ^ 2 * alpha_var
 }
-#' @export
 logit <- function(x) {
   1 / (1 + exp(-20 * (x - 0.5)))
 }
-#' @export
 bump <- function(x) {
   (x + 2 * exp(-(16 * (x - 0.5)) ^ 2)) / 2.5
 }
-#' @export
 doppler <- function(x) {
   ifelse(x > 0, sin(4 / x ^ 0.7) + 1.5, 0.5)
 }
-#' @export
 wave <- function(x) {
   (sin(4 * pi * x ^ 4) * (1 - x) + 0.22) / 0.55
 }
-#' @export
 spa_het <- function(x) {
   sqrt(x * (1 - x)) * sin((2 * pi * (1 + 2 ^ (-3 / 5))) / (x + 2 ^ (-3 / 5))) + 0.5
 }
-#' @export
 sine3 <- function(x) {
   sin(3 * 2 * pi * x) * 0.5 + 0.5
 }
-#' @export
 sine12 <- function(x) {
   sin(12 * 2 * pi * x) / 2 + 0.5
 }
-#' @export
 compute_mse <- function(x, y, k, method) {
   knots <- seq(0, 1, length = k + 2)[-c(1, k + 2)]
   if (method == "s") {
@@ -63,7 +54,6 @@ compute_mse <- function(x, y, k, method) {
     stop("Error: method argument not correct")
   }
 }
-#' @export
 fitted_wrapper <- function(x, y, k, method) {
   knots <- seq(0, 1, length = k + 2)[-c(1, k + 2)]
   if (method == "s") {
@@ -96,15 +86,12 @@ fitted_wrapper <- function(x, y, k, method) {
     stop("Error: method argument not correct")
   }
 }
-#' @export
 difference_s <- function(x, fit, fun) {
   (as.vector(predict(fit, x = x)) - pryr::fget(fun)(x)) ^ 2
 }
-#' @export
 difference_p <- function(x, fit, fun) {
   (as.vector(predict(fit, data_frame(x = x))) - pryr::fget(fun)(x)) ^ 2
 }
-#' @export
 difference_a <- function(x, fit, fun) {
   (as.vector(predict(fit, data_frame(x = x))) - pryr::fget(fun)(x)) ^ 2
 }
@@ -112,12 +99,10 @@ difference_a_new <- function(x, param, knots, fun) {
   B <- fda::bsplineS(x = x, breaks = knots, norder = 3 + 1, returnMatrix = TRUE)
   (as.vector(B %*% param - pryr::fget(fun)(x))) ^ 2
 }
-#' @export
 error_wrapper <- function(ind, design, data) {
   sample <- data %>% filter(ind_wrapper == ind)
   l2_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1])
 }
-#' @export
 #' @importFrom stats integrate
 #' @importFrom stats rnorm
 #' @importFrom stats approxfun
@@ -166,13 +151,11 @@ l2_fit <- function(x, y, k, method, fun) {
   }
   error
 }
-#' @export
 nlevel_wrapper <- function(ind, design, data) {
-  sample <- data %>% dplyr::filter(ind_wrapper == ind)
+  sample <- data %>% dplyr::filter("ind_wrapper" == ind)
   c(ind_wrapper = ind,
     nlevel = nlevel_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1]))
 }
-#' @export
 predict_wrapper <- function(x, y, k, x_seq, method) {
   knots <- seq(0, 1, length = k + 2)[-c(1, k + 2)]
   if (method == "s") {
@@ -204,7 +187,6 @@ predict_wrapper <- function(x, y, k, x_seq, method) {
     stop("Error: method argument not correct")
   }
 }
-#' @export
 boldify <- function(mat, ind_row = 1:ncol(mat)) {
   ind_bool <-  1:ncol(mat) %in% ind_row
   submat <- mat[, ind_row]
@@ -219,7 +201,6 @@ boldify <- function(mat, ind_row = 1:ncol(mat)) {
     "colnames<-"(colnames(mat)) %>%
     "rownames<-"(rep("", nrow(mat)))
 }
-#' @export
 nknot_fit <- function(x, y, k, method, degree) {
   knots <- seq(0, 1, length = k + 2)[-c(1, k + 2)]
   if (method == "s") {
@@ -236,7 +217,7 @@ nknot_fit <- function(x, y, k, method, degree) {
     aridge <- aridge_solver(x, y, knots = knots, degree = degree)
     nknot <- length(aridge$knots_sel[[which.min(aridge$ebic)]])
   } else if (method == "bars") {
-    if (degre != 3) warning("BARS is only available with degree = 3")
+    if (degree != 3) warning("BARS is only available with degree = 3")
     bars <- barsN.fun(x, y, priorparam = c(1, length(knots)))
     ux <- unique(bars$no.knots)
     nknot <- ux[which.max(tabulate(match(bars$no.knots, ux)))]
@@ -249,7 +230,6 @@ nknot_fit <- function(x, y, k, method, degree) {
   }
   return(nknot)
 }
-#' @export
 gen_data_hetero <- function(ind, design) {
   sample <- data_frame(
     x = seq(0, 1, length = design$sample_size[ind]),
@@ -264,7 +244,6 @@ gen_data_hetero <- function(ind, design) {
     mutate(ind_wrapper = ind)
   return(sample)
 }
-#' @export
 gen_data <- function(ind, design) {
   sample <- data_frame(
     x = seq(0, 1, length = design$sample_size[ind]),

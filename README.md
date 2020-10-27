@@ -25,7 +25,7 @@ devtools::install_github("monneret/bandsolve")
 devtools::install_github("goepp/aspline")
 ```
 
-2. If `R` asks you which package you would like to update, there should be no need to update them: answer "None". If this breaks the package or prevents it from running, please [contact me](https://github.com/goepp/aspline#contact).
+2. If `R` asks you which package you would like to update, there should be no need to update them: answer "None".
 
 ### By-hand installation
 1. Click "Clone or Download" > "Download ZIP" to download the file "aspline-master.zip"
@@ -108,7 +108,7 @@ ggplot() +
 The stricking difference between the two methods is that A-spline fits a far sparser model than P-Spline.
 
 ## Contact
-A problem or suggestion? Feel free to make a pull request or to email me (see my contact details on [my webpage](https://goepp.github.io))
+If you encounter a bug or have a suggestion for improvement, please [raise an issue](https://github.com/goepp/aspline/issues/new) or make a pull request.
 
 ## License
 This package is released under the GPLv3 License: see the `LICENSE` file or the [online text](https://www.gnu.org/licenses/gpl-3.0.en.html). In [short](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)#summary), you can use, modify, and distribute (including for commerical use) this package, with the notable obligations to use the GPLv3 license for your work and to provide a copy of the present source code.

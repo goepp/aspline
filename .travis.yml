@@ -6,4 +6,4 @@ os:
 jobs:
   include:
   - osx_image: xcode12.1
-
+latex: false
