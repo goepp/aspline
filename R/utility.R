@@ -3,7 +3,6 @@
 #' @param X The design matrix, as given by \code{splines2::bSpline}.
 #' @param degree Degree of the spline regression, as used in function \code{splines2::bSpline}.
 #' @return A matrix \code{B} with all non-zero entries of \code{X} and a vector of indices \code{alpha} representing the positions of the non-zero blocks of \code{X}.
-#' @export
 block_design <- function(X, degree) {
   m <- degree + 1
   X_epsi <- add_epsi(X, degree)
