@@ -26,7 +26,6 @@ Imports:
     mgcv,
     reshape2, 
     pspline,
-    freeknotsplines,
     pryr,
     fda
 RoxygenNote: 7.1.1
