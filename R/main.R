@@ -143,7 +143,7 @@ aridge_solver <- function(x, y,
   sel_mat <- sel_ls %>%
     unlist() %>%
     round(digits = 1) %>%
-    matrix(., ncol(X) - degree - 1)
+    matrix(ncol(X) - degree - 1)
   knots_sel_monotonous <- apply(sel_mat, 1, function(a) all(diff(a) <= 0))
   if (!all(knots_sel_monotonous)) {
     if (sum(!knots_sel_monotonous) >= 10) {
@@ -157,16 +157,16 @@ aridge_solver <- function(x, y,
     }
   }
   # Print regularization path
-  regul_df <- tibble::data_frame(penalty = rep(pen, each = ncol(X)),
-                                 index = rep(1:(ncol(X)), length(pen)),
-                                 param = par_ls %>% unlist())
+  regul_df <- dplyr::data_frame("penalty" = rep(pen, each = ncol(X)),
+                                 "index" = rep(1:(ncol(X)), length(pen)),
+                                 "param" = par_ls %>% unlist())
   path <- ggplot2::ggplot(regul_df, ggplot2::aes(penalty, param, color = as.factor(index))) +
     ggplot2::geom_line() +
     ggplot2::scale_x_log10() +
     ggplot2::theme(legend.position = 'none') +
     ggplot2::geom_vline(xintercept = pen[which(diff(apply(sel_mat, 2, sum)) != 0) + 1],
                         size = 0.2)
-  criterion <- data_frame(dim = dim,
+  criterion <- dplyr::data_frame(dim = dim,
                           pen = pen,
                           aic = aic,
                           bic = bic,
@@ -188,7 +188,6 @@ aridge_solver <- function(x, y,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
        "dim" = dim, "loglik" = loglik, "crit_plot" = crit_plot)
 }
-#' @export
 aspline_old <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x) + 2)[-c(1, 2 * length(x) + 2)],
                     pen = 10 ^ seq(-3, 6, length = 100),
                     degree = 3,
@@ -292,7 +291,6 @@ aspline_old <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x)
        "aic" = aic, "bic" = bic, "ebic" = ebic, "loglik" = loglik,
        "dim" = dim, "path" = path)
 }
-#' @export
 hessian_solver_glm <- function(par, X, y, degree, pen, family,
                                w = rep(1, ncol(X) - degree - 1)) {
   if (family == "gaussian") {
@@ -317,7 +315,6 @@ hessian_solver_glm <- function(par, X, y, degree, pen, family,
   vect <- t(X) %*% (W %*% X %*% par + y - g_inv(X %*% par))
   as.vector(solve(mat, vect))
 }
-#' @export
 hessian_solver_glm_band <- function(par, X, y, B, alpha, pen, w, degree,
                                     family = c("gaussian", "binomial", "poisson")) {
   family <- match.arg(family)
@@ -349,7 +346,6 @@ hessian_solver_glm_band <- function(par, X, y, B, alpha, pen, w, degree,
   vect <- crossprod(X, sweep(X, 1, glm_weight, `*`) %*% par + y - g_inv(X %*% par))
   as.vector(bandsolve(mat, vect))
 }
-#' @export
 wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
                               family = c("normal", "poisson", "binomial"),
                               old_par = rep(1, ncol(X)),
@@ -369,7 +365,6 @@ wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
   if (iter == maxiter) warnings("Warning: NR did not converge.")
   list('par' = par, 'iter' = iter)
 }
-#' @export
 aridge_solver_glm_slow <- function(X, y, pen, degree,
                                    family = c("binomial", "poisson", "normal"),
                                    maxiter = 1000,
@@ -455,9 +450,9 @@ aridge_solver_glm_slow <- function(X, y, pen, degree,
     }
   }
   # Print regularization path
-  regul_df <- dplyr::data_frame(penalty = rep(pen, each = ncol(X)),
-                                index = rep(1:(ncol(X)), length(pen)),
-                                param = par_ls %>% unlist())
+  regul_df <- dplyr::data_frame("penalty" = rep(pen, each = ncol(X)),
+                                "index" = rep(1:(ncol(X)), length(pen)),
+                                "param" = par_ls %>% unlist())
   path <- ggplot2::ggplot(regul_df, ggplot2::aes(penalty, param, color = as.factor(index))) +
     ggplot2::geom_line() +
     ggplot2::scale_x_log10() +
@@ -470,7 +465,6 @@ aridge_solver_glm_slow <- function(X, y, pen, degree,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
        "dim" = dim, "loglik" = loglik)
 }
-#' @export
 aridge_solver_old <- function(X, y, pen, degree,
                           maxiter = 1000,
                           epsilon = 1e-5,
@@ -550,9 +544,9 @@ aridge_solver_old <- function(X, y, pen, degree,
     }
   }
   # Print regularization path
-  regul_df <- dplyr::data_frame(penalty = rep(pen, each = ncol(X)),
-                                index = rep(1:(ncol(X)), length(pen)),
-                                param = par_ls %>% unlist())
+  regul_df <- dplyr::data_frame("penalty" = rep(pen, each = ncol(X)),
+                                "index" = rep(1:(ncol(X)), length(pen)),
+                                "param" = par_ls %>% unlist())
   path <- ggplot2::ggplot(regul_df, ggplot2::aes(penalty, param, color = as.factor(index))) +
     ggplot2::geom_line() +
     ggplot2::scale_x_log10() +
