@@ -4,7 +4,9 @@
 \name{nmr}
 \alias{nmr}
 \title{Nuclear Magnetic Resonance data}
-\format{Data farme of 1024 rows and two columns: the index \code{x} and the signal \code{y}.}
+\format{
+Data farme of 1024 rows and two columns: the index \code{x} and the signal \code{y}.
+}
 \source{
 \itemize{
 \item Data from \url{https://web.stanford.edu/~hastie/ElemStatLearn/datasets/nmr1.csv}.

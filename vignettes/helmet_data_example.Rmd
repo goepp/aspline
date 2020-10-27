@@ -5,8 +5,10 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
@@ -17,7 +19,7 @@ knitr::opts_chunk$set(
 ```
 
 ## Setup
-```{r, message = FALSE, error = FALSE}
+```{r load-packages, message = FALSE, error = FALSE}
 library(aspline)
 library(ggplot2)
 library(dplyr)
@@ -29,7 +31,7 @@ y <- helmet$y
 ```
 
 ## Fit Aspline
-```{r}
+```{r run-aspline}
 k <- 40
 knots <- seq(min(x), max(x), length = k + 2)[-c(1, k + 2)]
 pen <- 10 ^ seq(-4, 4, 0.25)
@@ -60,7 +62,7 @@ ggplot2::ggsave("helmet_a_spline.png",
 
 
 ## Fit P-Splines
-```{r}
+```{r run-pspline}
 p_fit <- mgcv::gam(y ~ s(x, bs = "ps", k = length(knots) + 3 + 1, m = c(3, 2)))
 X <- splines2::bSpline(x_seq, knots = knots, intercept = TRUE)
 p_basis <- (X %*% diag(coef(p_fit))) %>%

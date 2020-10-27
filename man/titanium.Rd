@@ -4,11 +4,13 @@
 \name{titanium}
 \alias{titanium}
 \title{Titanium heat data}
-\format{49 observations and two variables:
+\format{
+49 observations and two variables:
 \describe{
 \item{x}{temperature}
 \item{y}{physical property}
-}}
+}
+}
 \source{
 \itemize{
 \item de Boor, C., and Rice, J. R. (1986), Least-squares cubic spline approximation. II: variable knots. \emph{Report CSD TR 21, Purdue U., Lafayette, IN.}
