@@ -95,3 +95,17 @@
 #' \item See also The Elements of Statisical Learning (2001, 2nd Ed.), \emph{Hastie, T., Friedman, J., and Tibshirani, R.J}, p. 176}.
 #'
 "nmr"
+#' Lidar data
+#'
+#' Data from a light detection and ranging (LIDAR) experiment
+#'
+#' @format
+#' \describe{
+#'    \item{range}{distance travelled before the light is reflected back to its source}
+#'    \item{logratio}{logarithm of the ratio of received light from two laser sources}}
+#' @source
+#' \itemize{
+#' \item Sigrist, M. (Ed.) (1994). Air Monitoring by Spectroscopic Techniques (Chemical Analysis Series,vol. 197). New York: Wiley
+#' \item The R package \url{https://CRAN.R-project.org/package=SemiPar}}
+#' @references Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \emph{Semiparametric Regression}, Cambridge University Press.
+"lidar"
