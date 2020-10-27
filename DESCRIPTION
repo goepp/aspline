@@ -24,7 +24,11 @@ Imports:
     Rcpp,
     Matrix,
     mgcv,
-    reshape2
+    reshape2, 
+    pspline,
+    freeknotsplines,
+    pryr,
+    fda
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp
 Suggests: testthat,
