@@ -160,7 +160,7 @@ aridge_solver <- function(x, y,
   regul_df <- tibble::data_frame(penalty = rep(pen, each = ncol(X)),
                                  index = rep(1:(ncol(X)), length(pen)),
                                  param = par_ls %>% unlist())
-  path <- ggplot2::ggplot(regul_df, aes(penalty, param, color = as.factor(index))) +
+  path <- ggplot2::ggplot(regul_df, ggplot2::aes(penalty, param, color = as.factor(index))) +
     ggplot2::geom_line() +
     ggplot2::scale_x_log10() +
     ggplot2::theme(legend.position = 'none') +
@@ -172,11 +172,11 @@ aridge_solver <- function(x, y,
                           bic = bic,
                           ebic = ebic) %>%
     reshape2::melt(id.vars = c("pen", "dim"))
-  crit_plot <- ggplot(criterion, aes(dim, value, color = variable)) +
-    geom_line() +
-    scale_x_log10() +
-    scale_y_log10() +
-    geom_vline(xintercept = c(dim[which.min(aic)],
+  crit_plot <- ggplot2::ggplot(criterion, ggplot2::aes(dim, value, color = variable)) +
+    ggplot2::geom_line() +
+    ggplot2::scale_x_log10() +
+    ggplot2::scale_y_log10() +
+    ggplot2::geom_vline(xintercept = c(dim[which.min(aic)],
                               dim[which.min(bic)],
                               dim[which.min(ebic)]))
   fit = list("aic" = model[[which.min(aic)]],
@@ -280,7 +280,7 @@ aspline_old <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x)
   regul_df <- dplyr::data_frame(penalty = rep(pen, each = nrow(XX_band)),
                                 index = rep(1:(nrow(XX_band)), length(pen)),
                                 param = par_ls %>% unlist())
-  path <- ggplot2::ggplot(regul_df, aes(penalty, param, color = as.factor(index))) +
+  path <- ggplot2::ggplot(regul_df, ggplot2::aes(penalty, param, color = as.factor(index))) +
     ggplot2::geom_step() +
     ggplot2::scale_x_log10() +
     ggplot2::theme(legend.position = 'none') +
@@ -458,7 +458,7 @@ aridge_solver_glm_slow <- function(X, y, pen, degree,
   regul_df <- dplyr::data_frame(penalty = rep(pen, each = ncol(X)),
                                 index = rep(1:(ncol(X)), length(pen)),
                                 param = par_ls %>% unlist())
-  path <- ggplot2::ggplot(regul_df, aes(penalty, param, color = as.factor(index))) +
+  path <- ggplot2::ggplot(regul_df, ggplot2::aes(penalty, param, color = as.factor(index))) +
     ggplot2::geom_line() +
     ggplot2::scale_x_log10() +
     ggplot2::theme(legend.position = 'none') +
@@ -553,7 +553,7 @@ aridge_solver_old <- function(X, y, pen, degree,
   regul_df <- dplyr::data_frame(penalty = rep(pen, each = ncol(X)),
                                 index = rep(1:(ncol(X)), length(pen)),
                                 param = par_ls %>% unlist())
-  path <- ggplot2::ggplot(regul_df, aes(penalty, param, color = as.factor(index))) +
+  path <- ggplot2::ggplot(regul_df, ggplot2::aes(penalty, param, color = as.factor(index))) +
     ggplot2::geom_line() +
     ggplot2::scale_x_log10() +
     ggplot2::theme(legend.position = 'none') +
