@@ -67,8 +67,6 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' @param epsilon Value of the constant in the adaptive ridge procedure (see \emph{Frommlet, F., Nuel, G. (2016)
 #' An Adaptive Ridge Procedure for L0 Regularization}.)
 #' @param verbose Whether to print details at each step of the iterative procedure.
-#' @param diff Order of the differences on the parameters. The value \code{degree + 1} is necessary to perform
-#' selection of the knots.
 #' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
 #' @importFrom graphics abline
 #' @importFrom graphics lines
@@ -293,31 +291,6 @@ aspline_old <- function(x, y, knots = seq(min(x), max(x), length = 2 * length(x)
        "design" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "loglik" = loglik,
        "dim" = dim, "path" = path)
-}
-#' K-fold cross-validation
-#' @export
-kcv <- function(x, y, pen = 10 ^ seq(-3, 3, length = 50), nfold = 10) {
-  x <- as.vector(x)
-  y <- as.vector(y)
-  score_matrix <- matrix(NA, nfold, length(pen))
-  for (ind in 1:nfold) {
-    sample_test <- seq(floor(length(x)/nfold) * (ind - 1) + 1,
-                       floor(length(x)/nfold) * ind)
-    sample_train <- setdiff(1:length(x), sample_test)
-    x_train <- x[sample_train]
-    y_train <- y[sample_train]
-    x_test <- x[sample_test]
-    y_test <- y[sample_test]
-    train <- aspline(x_train, y_train, pen)$model
-    score_matrix[ind, ] <- sapply(
-      seq_along(train),
-    function(model) log(sum((y_test - predict(model, x_test)) ^ 2))
-    )
-    if (any(is.null(score_matrix[ind, ]))) {
-      stop('Error in call to aspline')
-    }
-  }
-  colSums(score_matrix)
 }
 #' @export
 hessian_solver_glm <- function(par, X, y, degree, pen, family,

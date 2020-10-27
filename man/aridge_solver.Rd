@@ -35,9 +35,6 @@ An Adaptive Ridge Procedure for L0 Regularization}.)}
 \item{verbose}{Whether to print details at each step of the iterative procedure.}
 
 \item{tol}{The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.}
-
-\item{diff}{Order of the differences on the parameters. The value \code{degree + 1} is necessary to perform
-selection of the knots.}
 }
 \description{
 Fit B-splines with automatic knot selection.

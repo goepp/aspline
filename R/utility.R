@@ -56,3 +56,26 @@ add_epsi <- function(X, degree) {
   }
   X_epsi
 }
+kcv <- function(x, y, pen = 10 ^ seq(-3, 3, length = 50), nfold = 10) {
+  x <- as.vector(x)
+  y <- as.vector(y)
+  score_matrix <- matrix(NA, nfold, length(pen))
+  for (ind in 1:nfold) {
+    sample_test <- seq(floor(length(x)/nfold) * (ind - 1) + 1,
+                       floor(length(x)/nfold) * ind)
+    sample_train <- setdiff(1:length(x), sample_test)
+    x_train <- x[sample_train]
+    y_train <- y[sample_train]
+    x_test <- x[sample_test]
+    y_test <- y[sample_test]
+    train <- aspline(x_train, y_train, pen)$model
+    score_matrix[ind, ] <- sapply(
+      seq_along(train),
+      function(model) log(sum((y_test - predict(model, x_test)) ^ 2))
+    )
+    if (any(is.null(score_matrix[ind, ]))) {
+      stop('Error in call to aspline')
+    }
+  }
+  colSums(score_matrix)
+}

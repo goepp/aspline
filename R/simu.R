@@ -152,7 +152,7 @@ l2_fit <- function(x, y, k, method, fun) {
   error
 }
 nlevel_wrapper <- function(ind, design, data) {
-  sample <- data %>% dplyr::filter(ind_wrapper == ind)
+  sample <- data %>% dplyr::filter("ind_wrapper" == ind)
   c(ind_wrapper = ind,
     nlevel = nlevel_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1]))
 }
@@ -217,7 +217,7 @@ nknot_fit <- function(x, y, k, method, degree) {
     aridge <- aridge_solver(x, y, knots = knots, degree = degree)
     nknot <- length(aridge$knots_sel[[which.min(aridge$ebic)]])
   } else if (method == "bars") {
-    if (degre != 3) warning("BARS is only available with degree = 3")
+    if (degree != 3) warning("BARS is only available with degree = 3")
     bars <- barsN.fun(x, y, priorparam = c(1, length(knots)))
     ux <- unique(bars$no.knots)
     nknot <- ux[which.max(tabulate(match(bars$no.knots, ux)))]
