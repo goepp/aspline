@@ -4,12 +4,14 @@
 \name{fossil}
 \alias{fossil}
 \title{Fossil data}
-\format{A data frame with 106 observations and 2 variables:
+\format{
+A data frame with 106 observations and 2 variables:
 \describe{
   \item{age}{The age of fossils, in millions of years}
   \item{strontium.ratio}{Ratio of strontium isotopes}
   ...
-}}
+}
+}
 \source{
 Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \emph{Geological Society of America Bulletin}, 109, 1421-1442.
 }
