@@ -3,4 +3,7 @@ warnings_are_errors: false
 os:
   - linux
   - osx
+jobs:
+  include:
+  - osx_image: xcode12.1
 latex: false
