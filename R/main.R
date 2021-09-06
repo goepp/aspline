@@ -159,8 +159,8 @@ aridge_solver <- function(x, y,
   }
   # Print regularization path
   regul_df <- dplyr::data_frame("penalty" = rep(pen, each = ncol(X)),
-                                 "index" = rep(1:(ncol(X)), length(pen)),
-                                 "param" = par_ls %>% unlist())
+                                "index" = rep(1:(ncol(X)), length(pen)),
+                                "param" = par_ls %>% unlist())
   path <- ggplot2::ggplot(regul_df, ggplot2::aes(.data$penalty, .data$param,
                                                  color = as.factor(.data$index))) +
     ggplot2::geom_line() +
@@ -169,18 +169,18 @@ aridge_solver <- function(x, y,
     ggplot2::geom_vline(xintercept = pen[which(diff(apply(sel_mat, 2, sum)) != 0) + 1],
                         size = 0.2)
   criterion <- dplyr::data_frame(dim = dim,
-                          pen = pen,
-                          aic = aic,
-                          bic = bic,
-                          ebic = ebic) %>%
+                                 pen = pen,
+                                 aic = aic,
+                                 bic = bic,
+                                 ebic = ebic) %>%
     reshape2::melt(id.vars = c("pen", "dim"))
   crit_plot <- ggplot2::ggplot(criterion, ggplot2::aes(.data$dim, .data$value, color = .data$variable)) +
     ggplot2::geom_line() +
     ggplot2::scale_x_log10() +
     ggplot2::scale_y_log10() +
     ggplot2::geom_vline(xintercept = c(dim[which.min(aic)],
-                              dim[which.min(bic)],
-                              dim[which.min(ebic)]))
+                                       dim[which.min(bic)],
+                                       dim[which.min(ebic)]))
   fit = list("aic" = model[[which.min(aic)]],
              "bic" = model[[which.min(bic)]],
              "ebic" = model[[which.min(ebic)]])
