@@ -157,19 +157,19 @@ predict_wrapper <- function(x, y, k, x_seq, method) {
     as.vector(predict(fit, x = x_seq))
   } else if (method == "p") {
     fit <- mgcv::gam(y ~ s(x, bs = "ps", k = length(knots) + 3 + 1, m = c(3, 2)))
-    as.vector(predict(fit, data.frame(x = x_seq)))
+    as.vector(predict(fit, dplyr::data_frame(x = x_seq)))
   } else if (method %in% c("a", "a_aic")) {
     aridge <- aridge_solver(x, y, knots)
     fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$aic)]]))
-    as.vector(predict(fit, data_frame(x = x_seq)))
+    as.vector(predict(fit, dplyr::data_frame(x = x_seq)))
   } else if (method == "a_bic") {
     aridge <- aridge_solver(x, y, knots)
     fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$bic)]]))
-    as.vector(predict(fit, data_frame(x = x_seq)))
+    as.vector(predict(fit, dplyr::data_frame(x = x_seq)))
   } else if (method == "a_ebic") {
     aridge <- aridge_solver(x, y, knots)
     fit <- lm(y ~ bs(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
-    as.vector(predict(fit, data_frame(x = x_seq)))
+    as.vector(predict(fit, dplyr::data_frame(x = x_seq)))
   } else {
     stop("Error: method argument not correct")
   }
