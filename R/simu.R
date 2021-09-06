@@ -222,7 +222,7 @@ gen_data_hetero <- function(ind, design) {
   sample <- dplyr::data_frame(
     "x" = seq(0, 1, length = design$sample_size[ind]),
     "y" = pryr::fget(design$fun[ind])(.data$x) +
-      rnorm(length(.data$x), 0, sd = hetero_1(x, design$sigma[ind]))
+      rnorm(length(.data$x), 0, sd = hetero_1(.data$x, design$sigma[ind]))
   ) %>%
     dplyr::mutate(sample_size = design$sample_size[ind]) %>%
     dplyr::mutate(sigma = design$sigma[ind]) %>%
