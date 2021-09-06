@@ -265,7 +265,10 @@ wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
   list('par' = par, 'iter' = iter)
 }
 #' @importFrom rlang .data
-aridge_solver_glm_slow <- function(X, y, pen, degree,
+aridge_solver_glm_slow <- function(x, y,
+                                   knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
+                                   pen = 10 ^ seq(-3, 3, length = 100),
+                                   degree = 3L,
                                    family = c("binomial", "poisson", "normal"),
                                    maxiter = 1000,
                                    epsilon = 1e-5,
@@ -274,6 +277,7 @@ aridge_solver_glm_slow <- function(X, y, pen, degree,
                                    tol = 1e-6) {
   family <- match.arg(family)
   # Compressed design matrix
+  X <- splines2::bSpline(x, knots = knots, intercept = TRUE, degree = degree)
   comp <- block_design(X, degree)
   B <- comp$B
   alpha <- comp$alpha
