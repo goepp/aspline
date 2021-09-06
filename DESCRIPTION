@@ -34,5 +34,6 @@ RoxygenNote: 7.1.1
 LinkingTo: Rcpp
 Suggests: testthat,
     knitr,
+    markdown,
     rmarkdown
 VignetteBuilder: knitr
