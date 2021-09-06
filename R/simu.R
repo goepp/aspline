@@ -45,10 +45,10 @@ compute_mse <- function(x, y, k, method) {
     bars <- barsN.fun(x, y, priorparam = c(1, 20))
     sum((bars$postmodes - y) ^ 2 / length(y))
   } else if (method == "fks") {
-    fks <- fit.search.numknots(x, y, degree = 3, search = "genetic")
+    fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3, search = "genetic")
     sum((fitted.freekt(fks) - y) ^ 2 / length(y))
   } else if (method == "freeps") {
-    freeps <- freepsgen(x, y, degree = 3, numknot = 5)
+    freeps <- freeknotsplines::freepsgen(x, y, degree = 3, numknot = 5)
     sum((fitted.freekt(freeps) - y) ^ 2 / length(y))
   } else {
     stop("Error: method argument not correct")
@@ -100,7 +100,7 @@ difference_a_new <- function(x, param, knots, fun) {
   (as.vector(B %*% param - pryr::fget(fun)(x))) ^ 2
 }
 error_wrapper <- function(ind, design, data) {
-  sample <- data %>% filter(ind_wrapper == ind)
+  sample <- data %>% filter(.data$ind_wrapper == ind)
   l2_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1])
 }
 #' @importFrom stats integrate
@@ -246,8 +246,8 @@ gen_data_hetero <- function(ind, design) {
 }
 gen_data <- function(ind, design) {
   sample <- data_frame(
-    x = seq(0, 1, length = design$sample_size[ind]),
-    y = pryr::fget(design$fun[ind])(x) + rnorm(length(x), 0, sd = design$sigma[ind])
+    "x" = seq(0, 1, length = design$sample_size[ind]),
+    "y" = pryr::fget(design$fun[ind])(x) + rnorm(length(x), 0, sd = design$sigma[ind])
   ) %>%
     mutate(sample_size = design$sample_size[ind]) %>%
     mutate(sigma = design$sigma[ind]) %>%
