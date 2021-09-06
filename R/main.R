@@ -340,7 +340,7 @@ aridge_solver_glm_slow <- function(x, y,
   sel_mat <- sel_ls %>%
     unlist() %>%
     round(digits = 1) %>%
-    matrix(., ncol(X) - degree - 1)
+    matrix(ncol(X) - degree - 1)
   knots_sel_monotonous <- apply(sel_mat, 1, function(a) all(diff(a) <= 0))
   if (!all(knots_sel_monotonous)) {
     if (sum(!knots_sel_monotonous) >= 10) {

@@ -46,10 +46,10 @@ compute_mse <- function(x, y, k, method) {
     sum((bars$postmodes - y) ^ 2 / length(y))
   } else if (method == "fks") {
     fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3, search = "genetic")
-    sum((fitted.freekt(fks) - y) ^ 2 / length(y))
+    sum((freeknotsplines::fitted.freekt(fks) - y) ^ 2 / length(y))
   } else if (method == "freeps") {
     freeps <- freeknotsplines::freepsgen(x, y, degree = 3, numknot = 5)
-    sum((fitted.freekt(freeps) - y) ^ 2 / length(y))
+    sum((freeknotsplines::fitted.freekt(freeps) - y) ^ 2 / length(y))
   } else {
     stop("Error: method argument not correct")
   }
@@ -78,10 +78,10 @@ fitted_wrapper <- function(x, y, k, method) {
   } else if (method == "fks") {
     fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3,
                                                 maxknot = k, search = "genetic")
-    as.vector(fitted.freekt(fks))
+    as.vector(freeknotsplines::fitted.freekt(fks))
   } else if (method == "freeps") {
     freeps <- freeknotsplines::freepsgen(x, y, degree = 3, numknot = 5)
-    as.vector(fitted.freekt(freeps))
+    as.vector(freeknotsplines::fitted.freekt(freeps))
   } else {
     stop("Error: method argument not correct")
   }
@@ -90,17 +90,17 @@ difference_s <- function(x, fit, fun) {
   (as.vector(predict(fit, x = x)) - pryr::fget(fun)(x)) ^ 2
 }
 difference_p <- function(x, fit, fun) {
-  (as.vector(predict(fit, data_frame(x = x))) - pryr::fget(fun)(x)) ^ 2
+  (as.vector(predict(fit, dplyr::data_frame(x = x))) - pryr::fget(fun)(x)) ^ 2
 }
 difference_a <- function(x, fit, fun) {
-  (as.vector(predict(fit, data_frame(x = x))) - pryr::fget(fun)(x)) ^ 2
+  (as.vector(predict(fit, dplyr::data_frame(x = x))) - pryr::fget(fun)(x)) ^ 2
 }
 difference_a_new <- function(x, param, knots, fun) {
   B <- fda::bsplineS(x = x, breaks = knots, norder = 3 + 1, returnMatrix = TRUE)
   (as.vector(B %*% param - pryr::fget(fun)(x))) ^ 2
 }
 error_wrapper <- function(ind, design, data) {
-  sample <- data %>% filter(.data$ind_wrapper == ind)
+  sample <- data %>% dplyr::filter(.data$ind_wrapper == ind)
   l2_fit(sample$x, sample$y, sample$k[1], sample$method[1], sample$fun[1])
 }
 #' @importFrom stats integrate
@@ -140,11 +140,11 @@ l2_fit <- function(x, y, k, method, fun) {
   } else if (method == "fks") {
     fks <- freeknotsplines::fit.search.numknots(x, y, degree = 3, search = "genetic",
                                                 maxknot = length(knots))
-    fit <- approxfun(x, fitted.freekt(fks))
+    fit <- approxfun(x, freeknotsplines::fitted.freekt(fks))
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else if (method == "freeps") {
     freeps <- freeknotsplines::freepsgen(x, y, degree = 3, numknot = 5)
-    fit <- approxfun(x, fitted.freekt(freeps))
+    fit <- approxfun(x, freeknotsplines::fitted.freekt(freeps))
     error <- integrate(function(x) (fit(x) - pryr::fget(fun)(x)) ^ 2, 0, 1)$value
   } else {
     stop("Error: method argument not correct")
@@ -163,7 +163,7 @@ predict_wrapper <- function(x, y, k, x_seq, method) {
     as.vector(predict(fit, x = x_seq))
   } else if (method == "p") {
     fit <- mgcv::gam(y ~ s(x, bs = "ps", k = length(knots) + 3 + 1, m = c(3, 2)))
-    as.vector(predict(fit, data_frame(x = x_seq)))
+    as.vector(predict(fit, data.frame(x = x_seq)))
   } else if (method == "a_new") {
     temp <- aspline(x, y, degree = 3, n_knots = k)
     param <- temp$result[which.min(temp$cv), ]
@@ -230,32 +230,36 @@ nknot_fit <- function(x, y, k, method, degree) {
   }
   return(nknot)
 }
+#' @importFrom rlang .data
 gen_data_hetero <- function(ind, design) {
-  sample <- data_frame(
-    x = seq(0, 1, length = design$sample_size[ind]),
-    y = pryr::fget(design$fun[ind])(x) + rnorm(length(x), 0, sd = hetero_1(x, design$sigma[ind]))
+  sample <- dplyr::data_frame(
+    "x" = seq(0, 1, length = design$sample_size[ind]),
+    "y" = pryr::fget(design$fun[ind])(.data$x) +
+      rnorm(length(.data$x), 0, sd = hetero_1(x, design$sigma[ind]))
   ) %>%
-    mutate(sample_size = design$sample_size[ind]) %>%
-    mutate(sigma = design$sigma[ind]) %>%
-    mutate(ind_rep = design$ind_rep[ind]) %>%
-    mutate(k = design$k[ind]) %>%
-    mutate(fun = design$fun[ind]) %>%
-    mutate(method = design$method[ind]) %>%
-    mutate(ind_wrapper = ind)
+    dplyr::mutate(sample_size = design$sample_size[ind]) %>%
+    dplyr::mutate(sigma = design$sigma[ind]) %>%
+    dplyr::mutate(ind_rep = design$ind_rep[ind]) %>%
+    dplyr::mutate(k = design$k[ind]) %>%
+    dplyr::mutate(fun = design$fun[ind]) %>%
+    dplyr::mutate(method = design$method[ind]) %>%
+    dplyr::mutate(ind_wrapper = ind)
   return(sample)
 }
+#' @importFrom rlang .data
 gen_data <- function(ind, design) {
-  sample <- data_frame(
+  sample <- dplyr::data_frame(
     "x" = seq(0, 1, length = design$sample_size[ind]),
-    "y" = pryr::fget(design$fun[ind])(x) + rnorm(length(x), 0, sd = design$sigma[ind])
+    "y" = pryr::fget(design$fun[ind])(.data$x) +
+      rnorm(length(.data$x), 0, sd = design$sigma[ind])
   ) %>%
-    mutate(sample_size = design$sample_size[ind]) %>%
-    mutate(sigma = design$sigma[ind]) %>%
-    mutate(ind_rep = design$ind_rep[ind]) %>%
-    mutate(k = design$k[ind]) %>%
-    mutate(fun = design$fun[ind]) %>%
-    mutate(method = design$method[ind]) %>%
-    mutate(degree = design$degree[1]) %>%
-    mutate(ind_wrapper = ind)
-  sample
+    dplyr::mutate(sample_size = design$sample_size[ind]) %>%
+    dplyr::mutate(sigma = design$sigma[ind]) %>%
+    dplyr::mutate(ind_rep = design$ind_rep[ind]) %>%
+    dplyr::mutate(k = design$k[ind]) %>%
+    dplyr::mutate(fun = design$fun[ind]) %>%
+    dplyr::mutate(method = design$method[ind]) %>%
+    dplyr::mutate(degree = design$degree[1]) %>%
+    dplyr::mutate(ind_wrapper = ind)
+  return(sample)
 }
