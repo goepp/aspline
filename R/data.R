@@ -21,7 +21,7 @@
 #'   \item{temp}{Temperature in Celsius}
 #'   ...
 #' }
-#' @source \url{http://people.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2/TrinityWorkshop/Workshop-material-Simon/Intro_to_splines/Exercises/}
+#' @source \code{fda::"MontrealTemp"}
 "montreal"
 #' Fossil data
 #'
@@ -35,7 +35,7 @@
 #' }
 #' @source Bralower, T.T, Fullagar, P.D., Paull, C.K, Dwyer, G.S. and Leckie, R.M. (1997). Mid-cretaceous strontium-isotope stratigraphy of deep-sea sections. \emph{Geological Society of America Bulletin}, 109, 1421-1442.
 #' @references Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \emph{Semiparametric Regression}, Cambridge University Press.
-#' \url{http://stat.tamu.edu/~carroll/semiregbook/}
+#' \url{https://stat.tamu.edu/~carroll/semiregbook/}
 "fossil"
 #' Bladder Cancer aCGH profile data
 #'

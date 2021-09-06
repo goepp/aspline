@@ -13,7 +13,7 @@ A data frame with 730 rows and 2 variables:
 }
 }
 \source{
-\url{http://people.stat.sfu.ca/~cschwarz/Consulting/Trinity/Phase2/TrinityWorkshop/Workshop-material-Simon/Intro_to_splines/Exercises/}
+\code{fda::"MontrealTemp"}
 }
 \usage{
 montreal

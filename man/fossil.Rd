@@ -23,6 +23,6 @@ A dataset with 106 observations on fossil shells from the \code{SemiPar} package
 }
 \references{
 Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \emph{Semiparametric Regression}, Cambridge University Press.
-\url{http://stat.tamu.edu/~carroll/semiregbook/}
+\url{https://stat.tamu.edu/~carroll/semiregbook/}
 }
 \keyword{datasets}
