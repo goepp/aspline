@@ -6,4 +6,6 @@ This is the first submission of this package to CRAN.
 * windows (on winbuilder), R 4.1.1
 
 ## R CMD check results
-There were no ERRORs, no WARNINGs and no NOTEs.
+There were no ERRORs, no WARNINGs and one NOTE (on windows only):
+
+* checking CRAN incoming feasibility ... NOTE
