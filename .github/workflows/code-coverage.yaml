@@ -14,3 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - uses: codecov/codecov-action@v2
+      - name: Test coverage
+        run: covr::codecov()
+        shell: Rscript {0}
