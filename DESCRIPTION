@@ -35,5 +35,6 @@ LinkingTo: Rcpp
 Suggests: testthat,
     knitr,
     markdown,
-    rmarkdown
+    rmarkdown,
+    covr
 VignetteBuilder: knitr
