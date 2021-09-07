@@ -60,8 +60,9 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #'
 #' @param x,y Input data, numeric vectors of same length
 #' @param knots Knots
-#' @param degree The degree of the splines. Recommended value is 3, which corresponds to natural splines.
 #' @param pen A vector of positive penalty values. The adaptive spline regression is performed for every value of pen
+#' @param degree The degree of the splines. Recommended value is 3, which corresponds to natural splines.
+#' @param family For forward compatibility. A description of the error distribution and link function to be used in the model. Only the "gaussian" family is implemented yet, corresponding to linear regression.
 #' @param maxiter Maximum number of iterations  in the main loop.
 #' @param epsilon Value of the constant in the adaptive ridge procedure (see \emph{Frommlet, F., Nuel, G. (2016)
 #' An Adaptive Ridge Procedure for L0 Regularization}.)
@@ -79,6 +80,7 @@ aspline <- function(x, y,
                     knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
                     pen = 10 ^ seq(-3, 3, length = 100),
                     degree = 3L,
+                    family = c("gaussian"),
                     maxiter = 1000,
                     epsilon = 1e-5,
                     verbose = FALSE,
