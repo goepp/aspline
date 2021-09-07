@@ -1,0 +1,16 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+name: test-coverage
+
+jobs:
+  steps:
+  - uses: actions/checkout@master
+  - uses: codecov/codecov-action@v2
+    with:
+      stoken: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
