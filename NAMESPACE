@@ -3,6 +3,7 @@
 export("%>%")
 export(LDL)
 export(aridge_solver)
+export(aspline)
 export(band_weight)
 export(bandsolve)
 export(hessian_solver)

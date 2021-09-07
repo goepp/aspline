@@ -58,7 +58,7 @@ knots <- seq(min(x), max(x), length = k + 2)[-c(1, k + 2)]
 degree <- 3
 pen <- 10 ^ seq(-4, 4, 0.25)
 x_seq <- seq(min(x), max(x), length = 1000)
-aridge <- aridge_solver(x, y, knots, pen, degree = degree)
+aridge <- aspline(x, y, knots, pen, degree = degree)
 #> Warning: `data_frame()` was deprecated in tibble 1.1.0.
 #> Please use `tibble()` instead.
 a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]],

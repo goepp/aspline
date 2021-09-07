@@ -58,8 +58,7 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #'
 #' Fit B-splines with automatic knot selection.
 #'
-#' @param x Data x values
-#' @param y Data y values
+#' @param x,y Input data, numeric vectors of same length
 #' @param knots Knots
 #' @param degree The degree of the splines. Recommended value is 3, which corresponds to natural splines.
 #' @param pen A vector of positive penalty values. The adaptive spline regression is performed for every value of pen
@@ -76,14 +75,14 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' @importFrom stats predict
 #' @importFrom rlang .data
 #' @export
-aridge_solver <- function(x, y,
-                          knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
-                          pen = 10 ^ seq(-3, 3, length = 100),
-                          degree = 3L,
-                          maxiter = 1000,
-                          epsilon = 1e-5,
-                          verbose = FALSE,
-                          tol = 1e-6) {
+aspline <- function(x, y,
+                    knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
+                    pen = 10 ^ seq(-3, 3, length = 100),
+                    degree = 3L,
+                    maxiter = 1000,
+                    epsilon = 1e-5,
+                    verbose = FALSE,
+                    tol = 1e-6) {
   X <- splines2::bSpline(x, knots = knots, intercept = TRUE, degree = degree)
   XX <- crossprod(X)
   XX_band <- cbind(mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
@@ -190,6 +189,9 @@ aridge_solver <- function(x, y,
        "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
        "dim" = dim, "loglik" = loglik, "crit_plot" = crit_plot)
 }
+#' @export
+#' @describeIn aspline Alias for aspline, for backwards compatibility
+aridge_solver <- aspline
 hessian_solver_glm <- function(par, X, y, degree, pen, family,
                                w = rep(1, ncol(X) - degree - 1)) {
   if (family == "gaussian") {
@@ -266,15 +268,15 @@ wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
 }
 #' @importFrom rlang .data
 aridge_solver_glm_slow <- function(x, y,
-                                   knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
-                                   pen = 10 ^ seq(-3, 3, length = 100),
-                                   degree = 3L,
-                                   family = c("binomial", "poisson", "normal"),
-                                   maxiter = 1000,
-                                   epsilon = 1e-5,
-                                   verbose = FALSE,
-                                   diff = degree + 1,
-                                   tol = 1e-6) {
+                             knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
+                             pen = 10 ^ seq(-3, 3, length = 100),
+                             degree = 3L,
+                             family = c("binomial", "poisson", "normal"),
+                             maxiter = 1000,
+                             epsilon = 1e-5,
+                             verbose = FALSE,
+                             diff = degree + 1,
+                             tol = 1e-6) {
   family <- match.arg(family)
   # Compressed design matrix
   X <- splines2::bSpline(x, knots = knots, intercept = TRUE, degree = degree)
