@@ -36,15 +36,15 @@ k <- 40
 knots <- seq(min(x), max(x), length = k + 2)[-c(1, k + 2)]
 pen <- 10 ^ seq(-4, 4, 0.25)
 x_seq <- seq(min(x), max(x), length = 1000)
-aridge <- aridge_solver(x, y, knots, pen)
-a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
+aridge <- aspline::aspline(x, y, knots, pen)
+a_fit <- lm(y ~ splines2::bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]]))
 X_seq <- splines2::bSpline(x_seq, knots = aridge$knots_sel[[which.min(aridge$ebic)]], intercept = TRUE)
 a_basis <- (X_seq %*% diag(coef(a_fit))) %>%
   as.data.frame() %>%
   dplyr::mutate(x = x_seq) %>%
   tidyr::pivot_longer(cols = paste0("V", 1:9), names_to = "spline_n", values_to = "y") %>%
   dplyr::filter(y != 0)
-a_predict <- data_frame(x = x_seq, pred = predict(a_fit, data.frame(x = x_seq)))
+a_predict <- dplyr::data_frame(x = x_seq, pred = predict(a_fit, data.frame(x = x_seq)))
 ggplot2::ggplot() +
   ggplot2::geom_point(data = helmet, aes(x, y), shape = 1) +
   ggplot2::geom_line(data = a_predict, aes(x, pred), size = 0.5) +
@@ -57,7 +57,7 @@ ggplot2::ggplot() +
 pdf_width <- 8
 pdf_height <- 5
 ggplot2::ggsave("helmet_a_spline.png",
-       height = pdf_height, width = pdf_width)
+                height = pdf_height, width = pdf_width)
 ```
 
 
@@ -71,7 +71,7 @@ p_basis <- (X %*% diag(coef(p_fit))) %>%
   tidyr::pivot_longer(cols = paste0("V", 1:9), names_to = "spline_n", values_to = "y") %>%
   dplyr::as_tibble() %>%
   dplyr::filter(y != 0)
-p_predict <- data_frame(x = x_seq, pred = predict(p_fit, data.frame(x = x_seq)))
+p_predict <- dplyr::data_frame(x = x_seq, pred = predict(p_fit, data.frame(x = x_seq)))
 ggplot2::ggplot() +
   ggplot2::geom_point(data = helmet, aes(x, y), shape = 1) +
   ggplot2::geom_line(data = p_predict, aes(x, pred), size = 0.5) +
@@ -80,6 +80,6 @@ ggplot2::ggplot() +
   ggplot2::ylab("") + ggplot2::xlab("")
 ```
 ```{r warning = FALSE, include = FALSE}
-ggsave("helmet_p_spline.png",
-       height = pdf_height, width = pdf_width)
+ggplot2::ggsave("helmet_p_spline.png",
+                height = pdf_height, width = pdf_width)
 ```
