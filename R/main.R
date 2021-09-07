@@ -202,7 +202,7 @@ aspline <- function(x, y,
        "dim" = dim, "loglik" = loglik, "crit_plot" = crit_plot)
 }
 #' @export
-#' @describeIn aspline Alias for aspline, for backwards compatibility
+#' @describeIn aspline Alias for \code{aspline}, for backwards compatibility
 aridge_solver <- aspline
 hessian_solver_glm <- function(par, X, y, degree, pen, family,
                                w = rep(1, ncol(X) - degree - 1)) {
