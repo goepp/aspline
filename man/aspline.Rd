@@ -11,7 +11,7 @@ aspline(
   knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
   pen = 10^seq(-3, 3, length = 100),
   degree = 3L,
-  family = c("gaussian"),
+  family = c("gaussian", "binomial", "poisson"),
   maxiter = 1000,
   epsilon = 1e-05,
   verbose = FALSE,
@@ -24,7 +24,7 @@ aridge_solver(
   knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
   pen = 10^seq(-3, 3, length = 100),
   degree = 3L,
-  family = c("gaussian"),
+  family = c("gaussian", "binomial", "poisson"),
   maxiter = 1000,
   epsilon = 1e-05,
   verbose = FALSE,
@@ -40,7 +40,7 @@ aridge_solver(
 
 \item{degree}{The degree of the splines. Recommended value is 3, which corresponds to natural splines.}
 
-\item{family}{For forward compatibility. A description of the error distribution and link function to be used in the model. Only the "gaussian" family is implemented yet, corresponding to linear regression.}
+\item{family}{A description of the error distribution and link function to be used in the model. The "gaussian", "binomial", and "poisson" families are currently implemented, corresponding to the linear regression, logistic regression, and Poisson regression, respectively.}
 
 \item{maxiter}{Maximum number of iterations  in the main loop.}
 

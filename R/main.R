@@ -62,7 +62,7 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' @param knots Knots
 #' @param pen A vector of positive penalty values. The adaptive spline regression is performed for every value of pen
 #' @param degree The degree of the splines. Recommended value is 3, which corresponds to natural splines.
-#' @param family For forward compatibility. A description of the error distribution and link function to be used in the model. Only the "gaussian" family is implemented yet, corresponding to linear regression.
+#' @param family A description of the error distribution and link function to be used in the model. The "gaussian", "binomial", and "poisson" families are currently implemented, corresponding to the linear regression, logistic regression, and Poisson regression, respectively.
 #' @param maxiter Maximum number of iterations  in the main loop.
 #' @param epsilon Value of the constant in the adaptive ridge procedure (see \emph{Frommlet, F., Nuel, G. (2016)
 #' An Adaptive Ridge Procedure for L0 Regularization}.)
@@ -80,18 +80,24 @@ aspline <- function(x, y,
                     knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
                     pen = 10 ^ seq(-3, 3, length = 100),
                     degree = 3L,
-                    family = c("gaussian"),
+                    family = c("gaussian", "binomial", "poisson"),
                     maxiter = 1000,
                     epsilon = 1e-5,
                     verbose = FALSE,
                     tol = 1e-6) {
+  family <- match.arg(family)
   X <- splines2::bSpline(x, knots = knots, intercept = TRUE, degree = degree)
-  XX <- crossprod(X)
-  XX_band <- cbind(mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
-  Xy <- crossprod(X, y)
+  if (family == "gaussian") {
+    XX <- crossprod(X)
+    XX_band <- cbind(mat2rot(XX + diag(rep(1e-20), ncol(X))), 0)
+    Xy <- crossprod(X, y)
+  } else  if (family %in% c("binomial", "poisson")) {
+    comp <- block_design(X, degree)
+    B <- comp$B
+    alpha <- comp$alpha
+  }
   # Define sigma0
   sigma0sq <- var(lm(y ~ X - 1)$residuals)
-  # sigma0sq <- var(y)
   # Define returned variables
   model <- X_sel <- knots_sel <- sel_ls <- par_ls <- vector("list", length(pen))
   aic <- bic <- ebic <- pen * NA
@@ -101,11 +107,20 @@ aspline <- function(x, y,
   par <- rep(1, ncol(X))
   w <- rep(1, ncol(X) - degree - 1)
   ind_pen <- 1
+
   # Main loop
   for (iter in 1:maxiter) {
-    par <- wridge_solver(XX_band, Xy, degree,
-                         pen[ind_pen], w,
-                         old_par = par)
+    if (family == "gaussian") {
+      par <- wridge_solver(XX_band, Xy, degree,
+                           pen[ind_pen], w,
+                           old_par = par)
+    } else if (family %in% c("binomial", "poisson")) {
+      par <- wridge_solver_glm(X, y, B, alpha, degree,pen[ind_pen],
+                               family = family,
+                               old_par = par,
+                               w = w,
+                               maxiter = 1000)$par
+    }
     w <- 1 / (diff(par, differences = degree + 1) ^ 2 + epsilon ^ 2)
     sel <- w * diff(par, differences = degree + 1) ^ 2
     converge <- max(abs(old_sel - sel)) < tol
@@ -131,11 +146,6 @@ aspline <- function(x, y,
       aic[ind_pen] <- 2 * dim[ind_pen] + 2 * loglik[ind_pen]
       bic[ind_pen] <- log(nrow(X)) * dim[ind_pen] + 2 * loglik[ind_pen]
       ebic[ind_pen] <- bic[ind_pen] + 2 * lchoose(ncol(X), ncol(X_sel[[ind_pen]]))
-      # temp <- AIC(model[ind_pen])
-      # aic[ind_pen] <- 2 * dim[ind_pen] +
-      #   2 * log(sum(model[[ind_pen]]$residuals ^ 2 / 1))
-      # bic[ind_pen] <- log(nrow(X)) * dim[ind_pen] +
-      #   2 * log(sum(model[[ind_pen]]$residuals ^ 2 / 1))
       ind_pen <- ind_pen + 1
     }
     if (ind_pen > length(pen)) break
@@ -250,7 +260,7 @@ hessian_solver_glm_band <- function(par, X, y, B, alpha, pen, w, degree,
   as.vector(bandsolve(mat, vect))
 }
 wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
-                              family = c("normal", "poisson", "binomial"),
+                              family = c("gaussian", "poisson", "binomial"),
                               old_par = rep(1, ncol(X)),
                               w = rep(1, ncol(X) - degree - 1),
                               maxiter = 1000) {
@@ -270,15 +280,15 @@ wridge_solver_glm <- function(X, y, B, alpha, degree, pen,
 }
 #' @importFrom rlang .data
 aridge_solver_glm_slow <- function(x, y,
-                             knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
-                             pen = 10 ^ seq(-3, 3, length = 100),
-                             degree = 3L,
-                             family = c("binomial", "poisson", "normal"),
-                             maxiter = 1000,
-                             epsilon = 1e-5,
-                             verbose = FALSE,
-                             diff = degree + 1,
-                             tol = 1e-6) {
+                                   knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
+                                   pen = 10 ^ seq(-3, 3, length = 100),
+                                   degree = 3L,
+                                   family = c("binomial", "poisson", "gaussian"),
+                                   maxiter = 1000,
+                                   epsilon = 1e-5,
+                                   verbose = FALSE,
+                                   diff = degree + 1,
+                                   tol = 1e-6) {
   family <- match.arg(family)
   # Compressed design matrix
   X <- splines2::bSpline(x, knots = knots, intercept = TRUE, degree = degree)
