@@ -11,6 +11,7 @@ aspline(
   knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
   pen = 10^seq(-3, 3, length = 100),
   degree = 3L,
+  family = c("gaussian"),
   maxiter = 1000,
   epsilon = 1e-05,
   verbose = FALSE,
@@ -23,6 +24,7 @@ aridge_solver(
   knots = seq(min(x), max(x), length = 42)[-c(1, 42)],
   pen = 10^seq(-3, 3, length = 100),
   degree = 3L,
+  family = c("gaussian"),
   maxiter = 1000,
   epsilon = 1e-05,
   verbose = FALSE,
@@ -37,6 +39,8 @@ aridge_solver(
 \item{pen}{A vector of positive penalty values. The adaptive spline regression is performed for every value of pen}
 
 \item{degree}{The degree of the splines. Recommended value is 3, which corresponds to natural splines.}
+
+\item{family}{For forward compatibility. A description of the error distribution and link function to be used in the model. Only the "gaussian" family is implemented yet, corresponding to linear regression.}
 
 \item{maxiter}{Maximum number of iterations  in the main loop.}
 
