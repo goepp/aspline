@@ -1,59 +1,54 @@
-# aspline: Fitting Adaptive Splines
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# aspline
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/goepp/aspline/workflows/R-CMD-check/badge.svg)](https://github.com/goepp/aspline/actions)
+<!-- badges: end -->
+
 ## What are Adaptive Splines?
 
-This package implements [A-Spline](https://arxiv.org/abs/1808.01770) regression, an adaptive procedure for fitting splines with automatic selection of the knots.
-One-dimentional B-Splines of any non-negative degree  can be fitted.
-This method uses a penalization approach to compensate overfitting.
-The penalty is proportional to the number of knots used to support the regression spline.
-Consequently, the fitted splines will have knots only where necessary and the fitted model is sparser than comparable penalized spline regressions (for instance, P-splines).
-
-**Important note:** this implementation of A-spline performs worse than Eiler's [P-splines](https://projecteuclid.org/download/pdf_1/euclid.ss/1038425655). This is, I believe, due to the fact that this implementation uses the adaptive ridge penalty without shrinkage, before fitting unpenalized B-splines (see [the preprint](https://arxiv.org/abs/1808.01770) for details).
-An improved -- and simplified -- version of A-splines is under development.
-This version should be faster to computer, and give better estimation results. The current implementation is the function `aspline` in branch `shrinkage`.
+This package implements [A-Spline](https://arxiv.org/abs/1808.01770)
+regression, an adaptive procedure for fitting splines with automatic
+selection of the knots. One-dimentional B-Splines of any non-negative
+degree can be fitted. This method uses a penalization approach to
+compensate overfitting. The penalty is proportional to the number of
+knots used to support the regression spline. Consequently, the fitted
+splines will have knots only where necessary and the fitted model is
+sparser than comparable penalized spline regressions (for instance the
+standard method for penalized splines:
+[P-splines](doi.org/10.1214/ss/1038425655)).
 
 ## Installation
-You can install the `aspline`package directly from GitHub, which is the recommended option. Alternatively, you can also install this package by hand. Details are given hereafter.
 
-### Recommended installation
-You have to download the package `bandsolve` (on which `aspline` depends) from Github since it is not available on the CRAN. 
+You can install the development version from
+[GitHub](https://github.com/) with:
 
-1. Execute in `R`:
-
-```
-install.packages("devtools")
-devtools::install_github("monneret/bandsolve")
+``` r
+# install.packages("devtools")
 devtools::install_github("goepp/aspline")
 ```
 
-2. If `R` asks you which package you would like to update, there should be no need to update them: answer "None".
+## Example
 
-### By-hand installation
-1. Click "Clone or Download" > "Download ZIP" to download the file "aspline-master.zip"
-2. Unzip the zip file and rename the output folder "aspline-master" to "aspline"
-3. Open a terminal in the folder where "aspline" is, and execute:
+Below is an illustration of the A-spline procedure using the
+[helmet](https://github.com/goepp/aspline/blob/master/data/helmet.rda)
+data. The thick line represents the fitted spline and the thin line
+represents the B-spline basis decomposition of the fitted curve.
 
-```
-R CMD build aspline  
-```
-
-This builds the package, which is now present in the same folder, under the name "aspline_0.1.0.tar.gz" (version number may be different).
-
-4. Install the packages in `R`:
-```
-setwd("path/to/the/aspline/package")
-install.packages("aspline_0.1.0.tar.gz", repos = NULL)
-```
-5. If you get an error message saying that the package `bandsolve` cannot be downloaded, you need to go through steps 1 to 4 for the package [bandsolve](https://github.com/monneret/bandsolve).
-
-Your package should now be installed! 
-
-## Illustration of `aspline`
-
-Below is an illustration of the A-spline procedure using the  [helmet](https://github.com/goepp/aspline/blob/master/data/helmet.rda) data.
-The thick line represents the fitted spline and the thin line represents the B-spline basis decomposition of the fitted curve.
-```r
+``` r
 library(aspline)
 library(tidyverse)
+#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+#> ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
+#> ✓ tibble  3.1.2     ✓ dplyr   1.0.5
+#> ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+#> ✓ readr   1.4.0     ✓ forcats 0.5.1
+#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+#> x dplyr::filter() masks stats::filter()
+#> x dplyr::lag()    masks stats::lag()
 library(splines2)
 data(helmet)
 x <- helmet$x
@@ -64,8 +59,12 @@ degree <- 3
 pen <- 10 ^ seq(-4, 4, 0.25)
 x_seq <- seq(min(x), max(x), length = 1000)
 aridge <- aridge_solver(x, y, knots, pen, degree = degree)
-a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]], degree = degree))
-X_seq <- bSpline(x_seq, knots = aridge$knots_sel[[which.min(aridge$ebic)]], intercept = TRUE, degree = degree)
+#> Warning: `data_frame()` was deprecated in tibble 1.1.0.
+#> Please use `tibble()` instead.
+a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]],
+                        degree = degree))
+X_seq <- bSpline(x_seq, knots = aridge$knots_sel[[which.min(aridge$ebic)]], 
+                 intercept = TRUE, degree = degree)
 a_basis <- (X_seq %*% diag(coef(a_fit))) %>%
   as.data.frame() %>%
   mutate(x = x_seq) %>%
@@ -80,13 +79,15 @@ ggplot() +
   theme(legend.position = "none") +
   ylab("") +
   xlab("")
-``` 
+```
 
-<img src="https://github.com/goepp/aspline/blob/master/vignettes/helmet_a_spline.png" width="450">
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
-For the sake of comparision, we display here the estimated P-spline with the same data.
-The thin line also represent the B-spline basis decomposition.
-```r 
+For the sake of comparision, we display here the estimated P-spline with
+the same data. The thin lines also represent the B-spline basis
+decomposition.
+
+``` r
 p_fit <- mgcv::gam(y ~ s(x, bs = "ps", k = length(knots) + 3 + 1, m = c(3, 2)))
 X <- bSpline(x_seq, knots = knots, intercept = TRUE)
 p_basis <- (X %*% diag(coef(p_fit))) %>%
@@ -103,12 +104,20 @@ ggplot() +
   theme(legend.position = "none") +
   ylab("") + xlab("")
 ```
-<img src="https://github.com/goepp/aspline/blob/master/vignettes/helmet_p_spline.png" width="450">
 
-The stricking difference between the two methods is that A-spline fits a far sparser model than P-Spline.
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
 ## Contact
-If you encounter a bug or have a suggestion for improvement, please [raise an issue](https://github.com/goepp/aspline/issues/new) or make a pull request.
+
+If you encounter a bug or have a suggestion for improvement, please
+[raise an issue](https://github.com/goepp/aspline/issues/new) or make a
+pull request.
 
 ## License
-This package is released under the GPLv3 License: see the `LICENSE` file or the [online text](https://www.gnu.org/licenses/gpl-3.0.en.html). In [short](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)#summary), you can use, modify, and distribute (including for commerical use) this package, with the notable obligations to use the GPLv3 license for your work and to provide a copy of the present source code.
+
+This package is released under the GPLv3 License: see the `LICENSE` file
+or the [online text](https://www.gnu.org/licenses/gpl-3.0.en.html). In
+[short](https://tldrlegal.com/license/gnu-general-public-license-v3-\(gpl-3\)#summary),
+you can use, modify, and distribute (including for commerical use) this
+package, with the notable obligations to use the GPLv3 license for your
+work and to provide a copy of the present source code.
