@@ -56,6 +56,6 @@ Fit B-splines with automatic knot selection.
 }
 \section{Functions}{
 \itemize{
-\item \code{aridge_solver}: Alias for aspline, for backwards compatibility
+\item \code{aridge_solver}: Alias for \code{aspline}, for backwards compatibility
 }}
 
