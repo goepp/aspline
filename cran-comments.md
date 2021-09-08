@@ -1,4 +1,8 @@
 This is the first submission of this package to CRAN.
+It is being resubmitted with minor changes to: 
+- bad LICENSE file specification in DESCRIPTION: changed "GPL-3 + file LICENSE" to "GPL-3"
+- and the redundant presence of the GPL3 LICENSE file): added "^LICENSE$" to .Rbuildignore
+- an URL missing the 'https' header: changed it in "README.Rmd" and "README.md"
 
 ## Test environments
 * ubuntu 20.04, locally, R 4.0.2
