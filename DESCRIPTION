@@ -12,7 +12,7 @@ Description: Perform one-dimensional spline regression with automatic knot selec
       This package uses a penalized approach to select the most relevant knots.
       B-splines of any degree can be fitted.  
 Depends: R (>= 2.10)
-License: GPL-3 + file LICENSE
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/goepp/aspline
