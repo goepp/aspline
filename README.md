@@ -19,7 +19,7 @@ knots used to support the regression spline. Consequently, the fitted
 splines will have knots only where necessary and the fitted model is
 sparser than comparable penalized spline regressions (for instance the
 standard method for penalized splines:
-[P-splines](doi.org/10.1214/ss/1038425655)).
+[P-splines](https://doi.org/10.1214/ss/1038425655)).
 
 ## Installation
 
