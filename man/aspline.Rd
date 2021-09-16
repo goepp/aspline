@@ -51,11 +51,25 @@ An Adaptive Ridge Procedure for L0 Regularization}.)}
 
 \item{tol}{The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.}
 }
+\value{
+A list with the following elements:
+\itemize{
+\item{\code{fit}: }
+\item{\code{sel}: list giving for each value of \code{lambda} the vector of the knot selection weights (a knot is selected if its weight is equal to 1.)}
+\item{\code{knots_sel}: list giving for each value of \code{lambda} the vector of selected knots.}
+\item{\code{model}: list giving for each value of \code{lambda} the fitted linear model.}
+\item{\code{par}: parameters of the models for each value of \code{lambda}.}
+\item{\code{sel_mat}}
+\item{\code{aic}, \code{bic}, and \code{ebic}: Akaike Information Criterion (AIC), Bayesian Information Criterion (BIC), and Extended BIC (EBIC) scores, for each value of \code{lambda}.}
+\item{\code{dim}: number of selected knots for each value of \code{lambda}.}
+\item{\code{loglik}: log-likelihood of the selected model, for each value of \code{lambda}.}
+}
+}
 \description{
 Fit B-splines with automatic knot selection.
 }
 \section{Functions}{
 \itemize{
-\item \code{aridge_solver}: Alias for \code{aspline}, for backwards compatibility
+\item \code{aridge_solver}: Alias for \code{aspline}, for backwards compatibility.
 }}
 
