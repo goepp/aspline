@@ -168,38 +168,14 @@ aspline <- function(x, y,
                      " are dropped and then reselected"))
     }
   }
-  # Print regularization path
-  regul_df <- dplyr::data_frame("penalty" = rep(pen, each = ncol(X)),
-                                "index" = rep(1:(ncol(X)), length(pen)),
-                                "param" = par_ls %>% unlist())
-  path <- ggplot2::ggplot(regul_df, ggplot2::aes(.data$penalty, .data$param,
-                                                 color = as.factor(.data$index))) +
-    ggplot2::geom_line() +
-    ggplot2::scale_x_log10() +
-    ggplot2::theme(legend.position = 'none') +
-    ggplot2::geom_vline(xintercept = pen[which(diff(apply(sel_mat, 2, sum)) != 0) + 1],
-                        size = 0.2)
-  criterion <- dplyr::data_frame(dim = dim,
-                                 pen = pen,
-                                 aic = aic,
-                                 bic = bic,
-                                 ebic = ebic) %>%
-    reshape2::melt(id.vars = c("pen", "dim"))
-  crit_plot <- ggplot2::ggplot(criterion, ggplot2::aes(.data$dim, .data$value, color = .data$variable)) +
-    ggplot2::geom_line() +
-    ggplot2::scale_x_log10() +
-    ggplot2::scale_y_log10() +
-    ggplot2::geom_vline(xintercept = c(dim[which.min(aic)],
-                                       dim[which.min(bic)],
-                                       dim[which.min(ebic)]))
   fit = list("aic" = model[[which.min(aic)]],
              "bic" = model[[which.min(bic)]],
              "ebic" = model[[which.min(ebic)]])
   # Return values
   list("fit" = fit, "sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
        "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
-       "aic" = aic, "bic" = bic, "ebic" = ebic, "path" = path,
-       "dim" = dim, "loglik" = loglik, "crit_plot" = crit_plot)
+       "aic" = aic, "bic" = bic, "ebic" = ebic,
+       "dim" = dim, "loglik" = loglik)
 }
 #' @export
 #' @describeIn aspline Alias for \code{aspline}, for backwards compatibility
