@@ -54,10 +54,9 @@ An Adaptive Ridge Procedure for L0 Regularization}.)}
 \value{
 A list with the following elements:
 \itemize{
-\item{\code{fit}: }
 \item{\code{sel}: list giving for each value of \code{lambda} the vector of the knot selection weights (a knot is selected if its weight is equal to 1.)}
 \item{\code{knots_sel}: list giving for each value of \code{lambda} the vector of selected knots.}
-\item{\code{model}: list giving for each value of \code{lambda} the fitted linear model.}
+\item{\code{model}: list giving for each value of \code{lambda} the fitted regression model.}
 \item{\code{par}: parameters of the models for each value of \code{lambda}.}
 \item{\code{sel_mat}}
 \item{\code{aic}, \code{bic}, and \code{ebic}: Akaike Information Criterion (AIC), Bayesian Information Criterion (BIC), and Extended BIC (EBIC) scores, for each value of \code{lambda}.}

@@ -70,10 +70,9 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' @param tol The tolerance chosen to diagnostic convergence of the adaptive ridge procedure.
 #' @return A list with the following elements:
 #' \itemize{
-#' \item{\code{fit}: }
 #' \item{\code{sel}: list giving for each value of \code{lambda} the vector of the knot selection weights (a knot is selected if its weight is equal to 1.)}
 #' \item{\code{knots_sel}: list giving for each value of \code{lambda} the vector of selected knots.}
-#' \item{\code{model}: list giving for each value of \code{lambda} the fitted linear model.}
+#' \item{\code{model}: list giving for each value of \code{lambda} the fitted regression model.}
 #' \item{\code{par}: parameters of the models for each value of \code{lambda}.}
 #' \item{\code{sel_mat}}
 #' \item{\code{aic}, \code{bic}, and \code{ebic}: Akaike Information Criterion (AIC), Bayesian Information Criterion (BIC), and Extended BIC (EBIC) scores, for each value of \code{lambda}.}
@@ -180,11 +179,8 @@ aspline <- function(x, y,
                      " are dropped and then reselected"))
     }
   }
-  fit = list("aic" = model[[which.min(aic)]],
-             "bic" = model[[which.min(bic)]],
-             "ebic" = model[[which.min(ebic)]])
   # Return values
-  list("fit" = fit, "sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
+  list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
        "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
        "aic" = aic, "bic" = bic, "ebic" = ebic,
        "dim" = dim, "loglik" = loglik)
