@@ -181,7 +181,7 @@ aspline <- function(x, y,
   }
   # Return values
   list("sel" = sel_ls, "knots_sel" = knots_sel, "model" = model,
-       "X_sel" = X_sel, "par" = par_ls, "sel_mat" = sel_mat,
+       "par" = par_ls, "sel_mat" = sel_mat,
        "aic" = aic, "bic" = bic, "ebic" = ebic,
        "dim" = dim, "loglik" = loglik)
 }
