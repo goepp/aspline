@@ -74,7 +74,7 @@ wridge_solver <- function(XX_band, Xy, degree, pen,
 #' \item{\code{knots_sel}: list giving for each value of \code{lambda} the vector of selected knots.}
 #' \item{\code{model}: list giving for each value of \code{lambda} the fitted regression model.}
 #' \item{\code{par}: parameters of the models for each value of \code{lambda}.}
-#' \item{\code{sel_mat}}
+#' \item{\code{sel_mat}: matrix of booleans whose columns indicate whether each knot is selected.}
 #' \item{\code{aic}, \code{bic}, and \code{ebic}: Akaike Information Criterion (AIC), Bayesian Information Criterion (BIC), and Extended BIC (EBIC) scores, for each value of \code{lambda}.}
 #' \item{\code{dim}: number of selected knots for each value of \code{lambda}.}
 #' \item{\code{loglik}: log-likelihood of the selected model, for each value of \code{lambda}.}
