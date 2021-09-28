@@ -3,19 +3,25 @@ Type: Package
 Title: Spline Regression with Adaptive Knot Selection
 Version: 0.1.0
 Authors@R: c(
-  person("Vivien", "Goepp", role = c("aut", "cre"), email = "vivien.goepp@gmail.com",
-  comment = c(ORCID = "0000-0001-6961-4260")),
-  person("Grégory", "Nuel", role = "aut", email = "nuel@math.cnrs.fr")
+  person("Vivien", "Goepp", 
+         role = c("aut", "cre"), 
+         email = "vivien.goepp@gmail.com",
+         comment = c(ORCID = "0000-0001-6961-4260")),
+  person("Grégory", "Nuel", 
+         role = "aut", 
+         email = "nuel@math.cnrs.fr")
   )
 Maintainer: Vivien Goepp <vivien.goepp@gmail.com>
 Description: Perform one-dimensional spline regression with automatic knot selection.
       This package uses a penalized approach to select the most relevant knots.
-      B-splines of any degree can be fitted.  
+      B-splines of any degree can be fitted. More details in Goepp et al. (2018),
+      "Spline Regression with Automatic Knot Selection", <arXiv:1808.01770>.
 Depends: R (>= 2.10)
-License: GPL-3 + file LICENSE
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/goepp/aspline
+BugReports: https://github.com/goepp/aspline/issues
 Imports:
     magrittr,
     ggplot2,
