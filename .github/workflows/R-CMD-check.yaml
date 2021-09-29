@@ -24,6 +24,8 @@ jobs:
         with:
           use-public-rspm: true
 
+      - uses: r-lib/actions/setup-pandoc@master
+
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
