@@ -54,13 +54,6 @@ ggplot2::ggplot() +
   ggplot2::ylab("") +
   ggplot2::xlab("")
 ```
-```{r warning = FALSE, include = FALSE}
-pdf_width <- 8
-pdf_height <- 5
-ggplot2::ggsave("helmet_a_spline.pdf",
-       height = pdf_height, width = pdf_width)
-```
-
 
 ## Fit P-Splines
 ```{r run-pspline}
@@ -79,8 +72,4 @@ ggplot2::ggplot() +
   ggplot2::geom_line(data = p_basis, aes(x, y, group = spline_n), linetype = 1, size = 0.1) +
   ggplot2::theme(legend.position = "none") +
   ggplot2::ylab("") + ggplot2::xlab("")
-```
-```{r warning = FALSE, include = FALSE}
-ggplot2::ggsave("helmet_p_spline.pdf",
-       height = pdf_height, width = pdf_width)
 ```
