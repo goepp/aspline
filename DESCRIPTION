@@ -33,8 +33,7 @@ Imports:
     rlang
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp
-Suggests: testthat,
-    knitr,
+Suggests: knitr,
     markdown,
     rmarkdown,
     covr
