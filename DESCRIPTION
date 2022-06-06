@@ -29,13 +29,8 @@ Imports:
     tidyr,
     splines2,
     Rcpp,
-    Matrix,
     mgcv,
-    reshape2, 
-    pspline,
-    rlang,
-    pryr,
-    fda
+    rlang
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp
 Suggests: testthat,
