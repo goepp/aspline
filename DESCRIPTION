@@ -1,7 +1,7 @@
 Package: aspline
 Type: Package
 Title: Spline Regression with Adaptive Knot Selection
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
   person("Vivien", "Goepp", 
          role = c("aut", "cre"), 
