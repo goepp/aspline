@@ -14,7 +14,7 @@ Authors@R: c(
 Maintainer: Vivien Goepp <vivien.goepp@gmail.com>
 Description: Perform one-dimensional spline regression with automatic knot selection.
       This package uses a penalized approach to select the most relevant knots.
-      B-splines of any degree can be fitted. More details in Goepp et al. (2018),
+      B-splines of any degree can be fitted. More details in 'Goepp et al. (2018)',
       "Spline Regression with Automatic Knot Selection", <arXiv:1808.01770>.
 Depends: R (>= 2.10)
 License: GPL-3
