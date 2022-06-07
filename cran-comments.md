@@ -1,16 +1,46 @@
-This is the first submission of this package to CRAN.
+This is the second submission of this package to CRAN. 
+The package was removed from CRAN on 2021-10-21 after build error occured with Solaris.
+
 It is being resubmitted with minor changes: 
-- In DESCRIPTION, I added an arxiv reference in the "Description" field.
-- In R/main.R: I documentesd the result of function 'aspline', .
+- 
 - In vignettes/helmet_data_example.Rmd, I removed the blocks of code saving plots to disk.
 
 ## Test environments
-* ubuntu 20.04, locally, R 4.0.2
-* ubuntu 20.04 (on github actions), R 4.1.1 
-* macOS 10.15 (on github actions), R 4.1.1
-* windows (on winbuilder), R 4.1.1
+Tested on the 4 environments used by `rhub::check_for_cran()`.
+* Debian Linux, R-devel, GCC ASAN/UBSAN
+* Fedora Linux, R-devel, clang, gfortran
+* Ubuntu Linux 20.04.1 LTS, R-release, GCC
+* Windows Server 2022, R-devel, 64 bit
 
 ## R CMD check results
-There were no ERRORs, no WARNINGs and one NOTE (on windows only):
+Testing returned up to two notes, which I reckon can be ignored.
 
+# Debian Linux, R-devel, GCC ASAN/UBSAN
+No ERRORs, no WARNINGs and no NOTES.
+
+# Fedora Linux, R-devel, clang, gfortran
+One NOTE:
 * checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Vivien Goepp <vivien.goepp@gmail.com>'
+New submission
+Package was archived on CRAN
+
+# Ubuntu Linux 20.04.1 LTS, R-release, GCC
+One NOTE:
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Vivien Goepp <vivien.goepp@gmail.com>'
+
+New submission
+Package was archived on CRAN
+
+# Windows Server 2022, R-devel, 64 bit
+Two NOTES:
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Vivien Goepp <vivien.goepp@gmail.com>'
+New submission
+Package was archived on CRAN
+
+* checking for detritus in the temp directory ... NOTE
+Found the following files/directories:
+  'lastMiKTeXException'
+  
