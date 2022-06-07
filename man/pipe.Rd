@@ -6,6 +6,9 @@
 \usage{
 lhs \%>\% rhs
 }
+\value{
+rhs(lhs)
+}
 \description{
 Pipe operator
 }

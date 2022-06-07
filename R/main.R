@@ -19,6 +19,7 @@ NULL
 #' @export
 #' @importFrom magrittr %>%
 #' @usage lhs \%>\% rhs
+#' @return rhs(lhs)
 NULL
 #'
 #' Inverse the hessian and multiply it by the score
