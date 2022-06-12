@@ -1,9 +1,9 @@
 This is the second submission of this package to CRAN. 
-The package was removed from CRAN on 2021-10-21 after build error occured with Solaris.
+The package was removed from CRAN on 2021-10-21 after build error occurred with Solaris.
 
 It is being resubmitted with minor changes: 
-- 
-- In vignettes/helmet_data_example.Rmd, I removed the blocks of code saving plots to disk.
+- Solved issues regarding imports from other packages.
+- Added missing field in .Rd documentation: field `\value` in `pipe.Rd`.
 
 ## Test environments
 Tested on the 4 environments used by `rhub::check_for_cran()`.
