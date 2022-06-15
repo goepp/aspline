@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/goepp/aspline/workflows/R-CMD-check/badge.svg)](https://github.com/goepp/aspline/actions)
+[![](https://www.r-pkg.org/badges/version/aspline)](https://cran.r-project.org/package=aspline)
 <!-- badges: end -->
 
 ## What are Adaptive Splines?

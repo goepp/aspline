@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/goepp/aspline/workflows/R-CMD-check/badge.svg)](https://github.com/goepp/aspline/actions)
+[![](https://www.r-pkg.org/badges/version/aspline)](https://cran.r-project.org/package=aspline)
 <!-- badges: end -->
 
 ## What are Adaptive Splines?
@@ -42,13 +43,13 @@ represents the B-spline basis decomposition of the fitted curve.
 library(aspline)
 library(tidyverse)
 #> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-#> ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
-#> ✓ tibble  3.1.2     ✓ dplyr   1.0.5
-#> ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-#> ✓ readr   1.4.0     ✓ forcats 0.5.1
+#> ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+#> ✔ tibble  3.1.7     ✔ dplyr   1.0.9
+#> ✔ tidyr   1.2.0     ✔ stringr 1.4.0
+#> ✔ readr   2.1.2     ✔ forcats 0.5.1
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-#> x dplyr::filter() masks stats::filter()
-#> x dplyr::lag()    masks stats::lag()
+#> ✖ dplyr::filter() masks stats::filter()
+#> ✖ dplyr::lag()    masks stats::lag()
 library(splines2)
 data(helmet)
 x <- helmet$x
@@ -59,8 +60,6 @@ degree <- 3
 pen <- 10 ^ seq(-4, 4, 0.25)
 x_seq <- seq(min(x), max(x), length = 1000)
 aridge <- aspline(x, y, knots, pen, degree = degree)
-#> Warning: `data_frame()` was deprecated in tibble 1.1.0.
-#> Please use `tibble()` instead.
 a_fit <- lm(y ~ bSpline(x, knots = aridge$knots_sel[[which.min(aridge$ebic)]],
                         degree = degree))
 X_seq <- bSpline(x_seq, knots = aridge$knots_sel[[which.min(aridge$ebic)]], 
@@ -72,6 +71,10 @@ a_basis <- (X_seq %*% diag(coef(a_fit))) %>%
   as_tibble() %>%
   filter(y != 0)
 a_predict <- data_frame(x = x_seq, pred = predict(a_fit, data.frame(x = x_seq)))
+#> Warning: `data_frame()` was deprecated in tibble 1.1.0.
+#> Please use `tibble()` instead.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
 ggplot() +
   geom_point(data = helmet, aes(x, y), shape = 1) +
   geom_line(data = a_predict, aes(x, pred), size = 0.5) +
@@ -117,7 +120,7 @@ pull request.
 
 This package is released under the GPLv3 License: see the `LICENSE` file
 or the [online text](https://www.gnu.org/licenses/gpl-3.0.en.html). In
-[short](https://tldrlegal.com/license/gnu-general-public-license-v3-\(gpl-3\)#summary),
+[short](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)#summary),
 you can use, modify, and distribute (including for commerical use) this
 package, with the notable obligations to use the GPLv3 license for your
 work and to provide a copy of the present source code.
